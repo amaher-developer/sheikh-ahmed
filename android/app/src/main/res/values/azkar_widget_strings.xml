@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="widget_app_name">الشيخ أحمد</string>
+    <!-- Shown as the widget's own name in the launcher's widget picker.
+         Without it the picker falls back to the application label, so the
+         entry reads "Sheikh Ahmed" with no hint of what the widget does. -->
+    <string name="widget_label">أذكار</string>
+    <string name="widget_description">مواقيت الصلاة والتاريخ الهجري ومهمة الأسبوع وذكر متغيّر</string>
+    <string name="widget_mission_label">مهمة الأسبوع</string>
+    <string name="widget_next_label">الصلاة القادمة</string>
+    <!--
+      Short, widely-known dhikr/ayah phrases for the home-screen widget
+      (see AzkarWidgetProvider.kt) — bundled natively rather than read
+      from the Flutter side, since the widget's periodic refresh
+      (onUpdate) can fire without the Flutter engine running at all.
+    -->
+    <string-array name="azkar_widget_phrases">
+        <item>سُبْحَانَ اللَّهِ وَبِحَمْدِهِ</item>
+        <item>لَا إِلَٰهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ</item>
+        <item>أَسْتَغْفِرُ اللَّهَ وَأَتُوبُ إِلَيْهِ</item>
+        <item>اللَّهُمَّ صَلِّ عَلَى مُحَمَّدٍ</item>
+        <item>حَسْبُنَا اللَّهُ وَنِعْمَ الْوَكِيلُ</item>
+        <item>لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللَّهِ</item>
+        <item>رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الْآخِرَةِ حَسَنَةً</item>
+        <item>الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ</item>
+        <item>وَمَن يَتَّقِ اللَّهَ يَجْعَل لَّهُ مَخْرَجًا</item>
+        <item>إِنَّ مَعَ الْعُسْرِ يُسْرًا</item>
+    </string-array>
+</resources>

@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  layoutDirection is forced RTL throughout: the widget's content is Arabic,
+  and the launcher hosts it in the *system* locale, which is frequently
+  English even for someone using this app in Arabic. Without this the
+  prayer name/time pairs and the header would lay out left-to-right around
+  right-to-left text.
+
+  Only LinearLayout, TextView and ImageView appear here. RemoteViews
+  inflates a widget layout through a LayoutInflater filter that rejects any
+  class not annotated @RemoteView — android.view.View is not, and a single
+  bare <View> used as a divider made the entire widget render blank.
+
+  Two separate things control the vertical layout, and they are easy to
+  confuse. The cell size (4x2, 140dp minimum) decides how much of the home
+  screen the widget takes. The pair of equally weighted spacers decides
+  where the leftover height goes whenever the launcher hands the widget a
+  taller cell than that minimum: they split it evenly, so the header stays
+  at the top, the dhikr floats centred between, and the prayer times and
+  mission stay pinned to the bottom edge.
+-->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/widget_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/azkar_widget_background"
+    android:layoutDirection="rtl"
+    android:padding="11dp">
+
+    <!-- Header: app identity on one side, Hijri date on the other -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical">
+
+        <ImageView
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:src="@mipmap/ic_launcher"
+            android:contentDescription="@string/widget_app_name"
+            android:layout_marginEnd="6dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/widget_app_name"
+            android:textColor="#E0B45F"
+            android:textSize="11sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/widget_date"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="end"
+            android:textColor="#CFE3D3"
+            android:textSize="11sp"
+            android:maxLines="1"
+            android:ellipsize="end" />
+    </LinearLayout>
+
+    <!-- Half the slack goes above the dhikr and half below (see the spacer
+         after it), which is what centres it in the gap between the header
+         and the block at the bottom. -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <!-- Always present, with a bundled default, so the widget never renders
+         empty even before the app has run once. Capped at two lines so a
+         long dhikr can't push the card taller. Kept at its natural height:
+         the spacers on either side position it, so growing the TextView
+         itself would only make its own text-centring fight theirs. -->
+    <TextView
+        android:id="@+id/widget_azkar_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="6dp"
+        android:layout_marginBottom="6dp"
+        android:text="سُبْحَانَ اللَّهِ وَبِحَمْدِهِ"
+        android:textColor="#FFFFFF"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        android:gravity="center"
+        android:lineSpacingExtra="1dp"
+        android:maxLines="2"
+        android:ellipsize="end" />
+
+    <!-- The second of the two equal spacers. Together they take every pixel
+         of leftover height and split it evenly, which both centres the
+         dhikr above and pins the prayer times and mission to the bottom
+         edge of the card.
+
+         Putting the weight on the dhikr itself instead does not pin the
+         block below: the dhikr grows and centres its own text inside the
+         extra space, leaving the times floating with a gap above them
+         rather than sitting on the bottom edge. LinearLayouts, not <View>s,
+         because RemoteViews refuses to inflate any class that isn't
+         annotated @RemoteView. -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1" />
+
+    <!-- Everything below needs data published by the app; hidden wholesale
+         until it exists (see AzkarWidgetProvider.bindAppData). -->
+    <LinearLayout
+        android:id="@+id/widget_data_group"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <!-- Next prayer, banded so it reads as the headline figure — the
+             one thing a glance at this widget is usually for. -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:background="@drawable/azkar_widget_band"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/widget_next_label"
+                android:textColor="#CFE3D3"
+                android:textSize="10sp"
+                android:layout_marginEnd="7dp" />
+
+            <TextView
+                android:id="@+id/widget_next_prayer"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#E0B45F"
+                android:textSize="13.5sp"
+                android:textStyle="bold"
+                android:maxLines="1" />
+
+            <TextView
+                android:id="@+id/widget_next_time"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="end"
+                android:textColor="#FFFFFF"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:maxLines="1" />
+        </LinearLayout>
+
+        <!-- The five prayers as evenly weighted columns, name over time. -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="7dp"
+            android:baselineAligned="false">
+
+            <LinearLayout
+                android:layout_width="0dp" android:layout_height="wrap_content"
+                android:layout_weight="1" android:orientation="vertical"
+                android:gravity="center">
+                <TextView android:id="@+id/widget_p1_name"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:textColor="#CFE3D3" android:textSize="10sp" android:maxLines="1" />
+                <TextView android:id="@+id/widget_p1_time"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:textColor="#FFFFFF" android:textSize="12sp"
+                    android:textStyle="bold" android:maxLines="1" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp" android:layout_height="wrap_content"
+                android:layout_weight="1" android:orientation="vertical"
+                android:gravity="center">
+                <TextView android:id="@+id/widget_p2_name"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:textColor="#CFE3D3" android:textSize="10sp" android:maxLines="1" />
+                <TextView android:id="@+id/widget_p2_time"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:textColor="#FFFFFF" android:textSize="12sp"
+                    android:textStyle="bold" android:maxLines="1" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp" android:layout_height="wrap_content"
+                android:layout_weight="1" android:orientation="vertical"
+                android:gravity="center">
+                <TextView android:id="@+id/widget_p3_name"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:textColor="#CFE3D3" android:textSize="10sp" android:maxLines="1" />
+                <TextView android:id="@+id/widget_p3_time"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:textColor="#FFFFFF" android:textSize="12sp"
+                    android:textStyle="bold" android:maxLines="1" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp" android:layout_height="wrap_content"
+                android:layout_weight="1" android:orientation="vertical"
+                android:gravity="center">
+                <TextView android:id="@+id/widget_p4_name"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:textColor="#CFE3D3" android:textSize="10sp" android:maxLines="1" />
+                <TextView android:id="@+id/widget_p4_time"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:textColor="#FFFFFF" android:textSize="12sp"
+                    android:textStyle="bold" android:maxLines="1" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp" android:layout_height="wrap_content"
+                android:layout_weight="1" android:orientation="vertical"
+                android:gravity="center">
+                <TextView android:id="@+id/widget_p5_name"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:textColor="#CFE3D3" android:textSize="10sp" android:maxLines="1" />
+                <TextView android:id="@+id/widget_p5_time"
+                    android:layout_width="wrap_content" android:layout_height="wrap_content"
+                    android:textColor="#FFFFFF" android:textSize="12sp"
+                    android:textStyle="bold" android:maxLines="1" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- This week's mission, banded to match the next-prayer row so the
+             two read as a pair of framed facts rather than stray text. -->
+        <LinearLayout
+            android:id="@+id/widget_mission_row"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginTop="7dp"
+            android:background="@drawable/azkar_widget_band"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/widget_mission_label"
+                android:textColor="#E0B45F"
+                android:textSize="10sp"
+                android:textStyle="bold"
+                android:layout_marginEnd="6dp" />
+
+            <TextView
+                android:id="@+id/widget_mission"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textColor="#FFFFFF"
+                android:textSize="11sp"
+                android:maxLines="1"
+                android:ellipsize="end" />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

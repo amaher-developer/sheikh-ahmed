@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Release builds run Android's resource shrinker, which strips any
+  resource it can't find a static reference to in Java/Kotlin/XML. These
+  raw resources are only ever referenced from Dart, as the strings passed
+  to RawResourceAndroidNotificationSound (see AdhanVoice.rawResource) —
+  the shrinker's analysis can't see that, so without this file it
+  silently drops the mp3s from the final APK. The scheduled adhan
+  notification then fails at runtime with a PlatformException ("The
+  resource adhan_call could not be found") even though the files are
+  present in the source tree and every intermediate build step.
+
+  One entry per adhan voice: each has its own notification channel, since
+  a channel's sound is fixed at creation and can't follow the voice
+  picker. Adding a voice to kAdhanVoices means adding it here too.
+  See: https://developer.android.com/studio/build/shrink-code#keep-resources
+-->
+<resources xmlns:tools="http://schemas.android.com/tools"
+    tools:keep="@raw/adhan_call,@raw/adhan_a2,@raw/adhan_a4,@raw/adhan_a5" />

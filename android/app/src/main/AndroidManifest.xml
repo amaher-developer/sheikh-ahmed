@@ -1,0 +1,176 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+    <!-- Used to compute prayer times for the device's actual location -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <!-- Required for Quran/radio audio streaming — without this, every
+         network request (including just_audio playback) silently fails. -->
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <!-- Required by audio_service for background playback + lock-screen
+         controls (see package README for the exact set). -->
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK"/>
+    <!-- Adhan notifications at prayer times: POST_NOTIFICATIONS is required
+         from Android 13, and RECEIVE_BOOT_COMPLETED lets the scheduled
+         adhans survive a reboot. -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <!-- Prayer reminders must land at the prayer time, not "eventually".
+         Without these, every notification is an *inexact* alarm, which
+         Android defers to the next Doze maintenance window — on a phone
+         left idle overnight or all day that window may not open for hours,
+         so the reminders simply never arrive.
+
+         SCHEDULE_EXACT_ALARM, and deliberately not USE_EXACT_ALARM. The
+         latter is granted at install with no prompt, but Google Play
+         restricts it to apps whose *core* functionality is an alarm clock or
+         a calendar. A prayer companion is neither, however alarm-shaped a
+         fixed-time adhan is, so declaring it would be a false declaration:
+         Play blocks the release and can suspend the listing.
+         SCHEDULE_EXACT_ALARM carries no such restriction. The trade-off is
+         that from Android 13 it is not granted automatically — the user
+         turns it on in the system's "Alarms & reminders" screen, which the
+         app offers from Settings rather than ambushing them at first launch
+         (see exactAlarmsAllowedProvider). Without it, reminders still
+         arrive, just inexactly. -->
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM"/>
+    <!-- Self-recording in the memorization practice mode (see
+         memorization_screen.dart) — the user records themselves reciting,
+         purely for their own playback, never sent anywhere. -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+    <application
+        android:label="Sheikh Ahmed"
+        android:name="${applicationName}"
+        android:icon="@mipmap/ic_launcher"
+        android:networkSecurityConfig="@xml/network_security_config">
+        <!-- MainActivity extends AudioServiceActivity, so audio_service's
+             background playback and lock-screen controls are unchanged;
+             the subclass only adds a method channel (see MainActivity.kt)
+             for pinning the azkar widget to the home screen. -->
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:launchMode="singleTop"
+            android:taskAffinity=""
+            android:theme="@style/LaunchTheme"
+            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
+            android:hardwareAccelerated="true"
+            android:windowSoftInputMode="adjustResize">
+            <!-- Specifies an Android theme to apply to this Activity as soon as
+                 the Android process has started. This theme is visible to the user
+                 while the Flutter UI initializes. After that, this theme continues
+                 to determine the Window background behind the Flutter UI. -->
+            <meta-data
+              android:name="io.flutter.embedding.android.NormalTheme"
+              android:resource="@style/NormalTheme"
+              />
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN"/>
+                <category android:name="android.intent.category.LAUNCHER"/>
+            </intent-filter>
+        </activity>
+        <!-- Don't delete the meta-data below.
+             This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
+        <meta-data
+            android:name="flutterEmbedding"
+            android:value="2" />
+
+        <!-- audio_service: runs playback as a foreground service so it
+             survives the app being backgrounded. -->
+        <service android:name="com.ryanheise.audioservice.AudioService"
+            android:foregroundServiceType="mediaPlayback"
+            android:exported="true" tools:ignore="Instantiatable">
+          <intent-filter>
+            <action android:name="android.media.browse.MediaBrowserService" />
+          </intent-filter>
+        </service>
+
+        <!-- audio_service: routes headset/Bluetooth media button presses
+             (play/pause/next) to the audio handler. -->
+        <receiver android:name="com.ryanheise.audioservice.MediaButtonReceiver"
+            android:exported="true" tools:ignore="Instantiatable">
+          <intent-filter>
+            <action android:name="android.intent.action.MEDIA_BUTTON" />
+          </intent-filter>
+        </receiver>
+
+        <!-- Plays the full adhan at prayer time. A notification *sound*
+             cannot do this: Android's notification player stops long audio
+             after a short timeout, so a 3-4 minute adhan was cut off part
+             way through. This service owns a MediaPlayer and plays the file
+             to the end. mediaPlayback is the same foreground-service type
+             audio_service already uses for Quran playback. -->
+        <service
+            android:name=".AdhanPlaybackService"
+            android:foregroundServiceType="mediaPlayback"
+            android:exported="false" />
+
+        <!-- Wakes at the prayer time and starts the service above. -->
+        <receiver
+            android:name=".AdhanAlarmReceiver"
+            android:exported="false" />
+
+        <!-- flutter_local_notifications: THE receiver every scheduled
+             notification is delivered to. AlarmManager fires at the
+             scheduled time into a PendingIntent targeting this class, and
+             this receiver is what actually builds and posts the
+             notification. The plugin's own library manifest declares no
+             receivers at all (it only contributes permissions), so an app
+             that omits this one schedules alarms perfectly happily and then
+             silently drops every single one when it fires — nothing is
+             posted, and nothing errors, because the scheduling call itself
+             succeeded. That was why no reminder ever arrived while
+             immediate notifications still worked: `show()` posts directly
+             and never routes through here. Required by the plugin's README;
+             do not remove. -->
+        <receiver
+            android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationReceiver"
+            android:exported="false"/>
+
+        <!-- Handles taps on notification action buttons. -->
+        <receiver
+            android:name="com.dexterous.flutterlocalnotifications.ActionBroadcastReceiver"
+            android:exported="false"/>
+
+        <!-- flutter_local_notifications: re-registers the scheduled adhan
+             notifications after the device reboots, which otherwise clears
+             all pending alarms. -->
+        <receiver
+            android:name="com.dexterous.flutterlocalnotifications.ScheduledNotificationBootReceiver"
+            android:exported="false">
+          <intent-filter>
+            <action android:name="android.intent.action.BOOT_COMPLETED"/>
+            <action android:name="android.intent.action.MY_PACKAGE_REPLACED"/>
+            <action android:name="android.intent.action.QUICKBOOT_POWERON"/>
+            <action android:name="com.htc.intent.action.QUICKBOOT_POWERON"/>
+          </intent-filter>
+        </receiver>
+
+        <!-- Home-screen widget showing a rotating dhikr phrase — see
+             AzkarWidgetProvider.kt. Not a notification; the user places it
+             on their home screen like any other widget. -->
+        <receiver
+            android:name=".AzkarWidgetProvider"
+            android:label="@string/widget_label"
+            android:exported="false">
+          <intent-filter>
+            <action android:name="android.appwidget.action.APPWIDGET_UPDATE"/>
+          </intent-filter>
+          <meta-data
+              android:name="android.appwidget.provider"
+              android:resource="@xml/azkar_widget_info"/>
+        </receiver>
+    </application>
+    <!-- Required to query activities that can process text, see:
+         https://developer.android.com/training/package-visibility and
+         https://developer.android.com/reference/android/content/Intent#ACTION_PROCESS_TEXT.
+
+         In particular, this is used by the Flutter engine in io.flutter.plugin.text.ProcessTextPlugin. -->
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.PROCESS_TEXT"/>
+            <data android:mimeType="text/plain"/>
+        </intent>
+    </queries>
+</manifest>

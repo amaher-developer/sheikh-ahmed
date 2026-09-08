@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  A translucent white band used to group a row against the green card,
+  giving the widget's sections visible structure instead of leaving them as
+  free-floating lines of text. Deliberately a white overlay rather than a
+  second solid colour, so it reads as the same surface lit slightly
+  differently and keeps working over the khatim texture behind it.
+-->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <solid android:color="#1AFFFFFF" />
+    <corners android:radius="12dp" />
+</shape>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Cleartext stays off for the app as a whole. The one exception is
+  radiojar.com, which hosts the Saudi Quran Radio stream: its https:// URL
+  answers with a redirect to a plain http:// node (n08.radiojar.com and
+  friends), and Android refuses to follow that by default — ExoPlayer fails
+  with CleartextNotPermittedException and the station never plays.
+
+  Worth knowing when verifying a stream: curl follows that redirect happily
+  and reports 200 audio/mpeg, so a URL can look fine from the command line
+  and still be dead on the device. The check that matters is whether the
+  *final* URL is still https.
+
+  Scoped to this one domain deliberately, and it carries nothing but public
+  audio — no credentials, no user data.
+-->
+<network-security-config>
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="true">radiojar.com</domain>
+    </domain-config>
+</network-security-config>

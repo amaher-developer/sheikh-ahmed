@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The khatim motif from the app itself (see KhatimPattern in
+  lib/shared/widgets/khatim_pattern.dart): two squares overlapped at 45
+  degrees forming the eight-point star that marks a rub' al-hizb in the
+  Mus'haf.
+
+  A tiled bitmap, not a VectorDrawable. A vector is scaled to fill the view,
+  so the star grid stretched with the widget's aspect ratio and the stars
+  came out visibly elliptical. tileMode="repeat" instead repeats the tile at
+  its natural size in both directions, so the motif keeps its proportions at
+  any widget size — which is how the Flutter painter draws it too.
+
+  The pattern layer is inset by the corner radius so it never reaches the
+  rounded corners. A tiled bitmap is rectangular and can't be clipped to a
+  rounded rect in XML, and without the inset faint strokes would show in the
+  corner squares outside the green card, over the wallpaper.
+-->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="rectangle">
+            <!-- Matches AppColors.primary (#2F5D3F) on the Flutter side. -->
+            <solid android:color="#2F5D3F" />
+            <corners android:radius="16dp" />
+        </shape>
+    </item>
+    <item
+        android:left="16dp"
+        android:top="16dp"
+        android:right="16dp"
+        android:bottom="16dp">
+        <bitmap
+            android:src="@drawable/khatim_tile"
+            android:tileMode="repeat"
+            android:gravity="top|start" />
+    </item>
+</layer-list>
