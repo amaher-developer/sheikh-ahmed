@@ -78,6 +78,9 @@ const _hundred = 'azkar_count.hundred';
 
 const _ayatAlKursi = QuranRef(surahNumber: 2, fromAyah: 255, toAyah: 255);
 
+/// The closing verses of Al Imran, which the Prophet recited on waking.
+const _imranClosing = QuranRef(surahNumber: 3, fromAyah: 190, toAyah: 200);
+
 // Al-Ikhlas and the two "seeking refuge" surahs. These are listed as three
 // separate items everywhere they appear below, not bundled into one. Each
 // is recited three times in its own right, so combining them made the
@@ -104,6 +107,20 @@ const _saffatOpening = QuranRef(surahNumber: 37, fromAyah: 1, toAyah: 10);
 const _rahmanChallenge = QuranRef(surahNumber: 55, fromAyah: 33, toAyah: 36);
 const _hashrClosing = QuranRef(surahNumber: 59, fromAyah: 21, toAyah: 24);
 const _jinnOpening = QuranRef(surahNumber: 72, fromAyah: 1, toAyah: 9);
+
+// آيات الشفاء — the six verses that name healing outright. They are the
+// heart of a ruqyah recited over illness and were missing from the list:
+// it carried the passages for protection and left out the ones for
+// شفاء. Recited as one set, which is why they are one item with six
+// references rather than six items.
+const _shifaVerses = [
+  QuranRef(surahNumber: 9, fromAyah: 14, toAyah: 14),
+  QuranRef(surahNumber: 10, fromAyah: 57, toAyah: 57),
+  QuranRef(surahNumber: 16, fromAyah: 69, toAyah: 69),
+  QuranRef(surahNumber: 17, fromAyah: 82, toAyah: 82),
+  QuranRef(surahNumber: 26, fromAyah: 80, toAyah: 80),
+  QuranRef(surahNumber: 41, fromAyah: 44, toAyah: 44),
+];
 
 const _ikhlasLabel = 'azkar_items.ikhlas';
 const _falaqLabel = 'azkar_items.falaq';
@@ -678,6 +695,13 @@ const kAzkarCategories = <AzkarCategory>[
         countLabel: _once,
         quranRefs: [_jinnOpening],
       ),
+      AzkarItem(
+        id: 'r13b',
+        textAr: 'azkar_items.shifa_verses',
+        countLabel: _thrice,
+        count: 3,
+        quranRefs: _shifaVerses,
+      ),
       // The three read three times each, as in the morning and evening
       // lists — separate items so three taps mean three recitations of
       // one surah rather than nine of something ambiguous.
@@ -771,6 +795,143 @@ const kAzkarCategories = <AzkarCategory>[
         id: 'r24',
         textAr:
             'لَا إِلَهَ إِلَّا اللَّهُ الْعَظِيمُ الْحَلِيمُ، لَا إِلَهَ إِلَّا اللَّهُ رَبُّ الْعَرْشِ الْعَظِيمِ، لَا إِلَهَ إِلَّا اللَّهُ رَبُّ السَّمَاوَاتِ وَرَبُّ الْأَرْضِ وَرَبُّ الْعَرْشِ الْكَرِيمِ',
+        countLabel: _once,
+      ),
+    ],
+  ),
+
+  // أذكار الاستيقاظ من النوم — said on opening the eyes, before
+  // anything else. Kept as its own list rather than folded into the
+  // morning azkar: waking and the morning are different moments, and
+  // someone waking at noon still says these.
+  AzkarCategory(
+    id: 'waking',
+    titleKey: 'azkar_screen.waking',
+    items: [
+      AzkarItem(
+        id: 'w1',
+        textAr:
+            'الْحَمْدُ لِلَّهِ الَّذِي أَحْيَانَا بَعْدَ مَا أَمَاتَنَا وَإِلَيْهِ النُّشُورُ',
+        countLabel: _once,
+      ),
+      AzkarItem(
+        id: 'w2',
+        textAr:
+            'لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، لَهُ الْمُلْكُ وَلَهُ الْحَمْدُ وَهُوَ عَلَى كُلِّ شَيْءٍ قَدِيرٌ، سُبْحَانَ اللَّهِ، وَالْحَمْدُ لِلَّهِ، وَلَا إِلَهَ إِلَّا اللَّهُ، وَاللَّهُ أَكْبَرُ، وَلَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللَّهِ الْعَلِيِّ الْعَظِيمِ، رَبِّ اغْفِرْ لِي',
+        countLabel: _once,
+      ),
+      AzkarItem(
+        id: 'w3',
+        textAr:
+            'الْحَمْدُ لِلَّهِ الَّذِي عَافَانِي فِي جَسَدِي، وَرَدَّ عَلَيَّ رُوحِي، وَأَذِنَ لِي بِذِكْرِهِ',
+        countLabel: _once,
+      ),
+      AzkarItem(
+        id: 'w4',
+        textAr: 'azkar_items.imran_closing',
+        countLabel: _once,
+        quranRefs: [_imranClosing],
+      ),
+    ],
+  ),
+
+  // أذكار الطعام — before, after, and the du'as around a shared meal.
+  AzkarCategory(
+    id: 'food',
+    titleKey: 'azkar_screen.food',
+    items: [
+      AzkarItem(
+        id: 'f1',
+        textAr:
+            'بِسْمِ اللَّهِ',
+        countLabel: _once,
+      ),
+      AzkarItem(
+        id: 'f2',
+        textAr:
+            'بِسْمِ اللَّهِ أَوَّلَهُ وَآخِرَهُ',
+        countLabel: _once,
+      ),
+      AzkarItem(
+        id: 'f3',
+        textAr:
+            'الْحَمْدُ لِلَّهِ الَّذِي أَطْعَمَنِي هَذَا وَرَزَقَنِيهِ مِنْ غَيْرِ حَوْلٍ مِنِّي وَلَا قُوَّةٍ',
+        countLabel: _once,
+      ),
+      AzkarItem(
+        id: 'f4',
+        textAr:
+            'الْحَمْدُ لِلَّهِ حَمْدًا كَثِيرًا طَيِّبًا مُبَارَكًا فِيهِ، غَيْرَ مَكْفِيٍّ وَلَا مُوَدَّعٍ وَلَا مُسْتَغْنًى عَنْهُ رَبَّنَا',
+        countLabel: _once,
+      ),
+      AzkarItem(
+        id: 'f5',
+        textAr:
+            'اللَّهُمَّ بَارِكْ لَهُمْ فِيمَا رَزَقْتَهُمْ، وَاغْفِرْ لَهُمْ وَارْحَمْهُمْ',
+        countLabel: _once,
+      ),
+      AzkarItem(
+        id: 'f6',
+        textAr:
+            'أَفْطَرَ عِنْدَكُمُ الصَّائِمُونَ، وَأَكَلَ طَعَامَكُمُ الْأَبْرَارُ، وَصَلَّتْ عَلَيْكُمُ الْمَلَائِكَةُ',
+        countLabel: _once,
+      ),
+      AzkarItem(
+        id: 'f7',
+        textAr:
+            'ذَهَبَ الظَّمَأُ، وَابْتَلَّتِ الْعُرُوقُ، وَثَبَتَ الْأَجْرُ إِنْ شَاءَ اللَّهُ',
+        countLabel: _once,
+      ),
+      AzkarItem(
+        id: 'f8',
+        textAr:
+            'اللَّهُمَّ بَارِكْ لَنَا فِيهِ وَزِدْنَا مِنْهُ',
+        countLabel: _once,
+      ),
+      AzkarItem(
+        id: 'f9',
+        textAr:
+            'اللَّهُمَّ أَطْعِمْ مَنْ أَطْعَمَنِي، وَاسْقِ مَنْ سَقَانِي',
+        countLabel: _once,
+      ),
+    ],
+  ),
+
+  // أذكار الأذان — what is said while the muezzin calls and after he
+  // finishes. The first item is an instruction rather than a text: what
+  // you say is whatever he just said, so there is nothing to print.
+  AzkarCategory(
+    id: 'adhan',
+    titleKey: 'azkar_screen.adhan',
+    items: [
+      AzkarItem(
+        id: 'a1',
+        textAr:
+            'يُقَالُ مِثْلُ مَا يَقُولُ الْمُؤَذِّنُ، إِلَّا فِي «حَيَّ عَلَى الصَّلَاةِ» وَ«حَيَّ عَلَى الْفَلَاحِ» فَيُقَالُ: لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللَّهِ',
+        countLabel: _once,
+      ),
+      AzkarItem(
+        id: 'a2',
+        textAr:
+            'وَأَنَا أَشْهَدُ أَنْ لَا إِلَهَ إِلَّا اللَّهُ وَحْدَهُ لَا شَرِيكَ لَهُ، وَأَنَّ مُحَمَّدًا عَبْدُهُ وَرَسُولُهُ، رَضِيتُ بِاللَّهِ رَبًّا، وَبِمُحَمَّدٍ رَسُولًا، وَبِالْإِسْلَامِ دِينًا',
+        countLabel: _once,
+      ),
+      AzkarItem(
+        id: 'a3',
+        textAr:
+            'اللَّهُمَّ صَلِّ وَسَلِّمْ عَلَى نَبِيِّنَا مُحَمَّدٍ',
+        countLabel: _once,
+      ),
+      AzkarItem(
+        id: 'a4',
+        textAr:
+            'اللَّهُمَّ رَبَّ هَذِهِ الدَّعْوَةِ التَّامَّةِ، وَالصَّلَاةِ الْقَائِمَةِ، آتِ مُحَمَّدًا الْوَسِيلَةَ وَالْفَضِيلَةَ، وَابْعَثْهُ مَقَامًا مَحْمُودًا الَّذِي وَعَدْتَهُ',
+        countLabel: _once,
+      ),
+      AzkarItem(
+        id: 'a5',
+        textAr:
+            'اللَّهُمَّ إِنِّي أَسْأَلُكَ مِنْ فَضْلِكَ وَرَحْمَتِكَ، فَإِنَّهُ لَا يَمْلِكُهَا إِلَّا أَنْتَ',
         countLabel: _once,
       ),
     ],

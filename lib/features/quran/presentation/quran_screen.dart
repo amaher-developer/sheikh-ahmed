@@ -67,6 +67,7 @@ class _QuranScreenState extends ConsumerState<QuranScreen> {
       if (mounted) setState(() => _submitted = query);
     });
   }
+
   final _chips = const [
     'quran_screen.surahs',
     'quran_screen.juz',
@@ -98,9 +99,11 @@ class _QuranScreenState extends ConsumerState<QuranScreen> {
       // transliteration they can actually see in the list.
       final q = _search.trim().toLowerCase();
       list = list
-          .where((s) =>
-              s.name.contains(_search.trim()) ||
-              s.englishName.toLowerCase().contains(q))
+          .where(
+            (s) =>
+                s.name.contains(_search.trim()) ||
+                s.englishName.toLowerCase().contains(q),
+          )
           .toList();
     }
     return list;
@@ -446,7 +449,10 @@ class _ContinueReadingCard extends StatelessWidget {
                   ),
                   const SizedBox(height: 9),
                   Text(
-                    surahDisplayName(surah, context.locale.languageCode == 'ar'),
+                    surahDisplayName(
+                      surah,
+                      context.locale.languageCode == 'ar',
+                    ),
                     style: TextStyle(
                       fontSize: 17,
                       fontWeight: FontWeight.w800,
@@ -610,13 +616,9 @@ class _BookmarksList extends ConsumerWidget {
         return Padding(
           padding: const EdgeInsets.only(bottom: 10),
           child: GestureDetector(
-            onTap: () =>
-                onOpenAyah(surah, startAyah: bookmark.ayahNumber),
+            onTap: () => onOpenAyah(surah, startAyah: bookmark.ayahNumber),
             child: Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 16,
-                vertical: 14,
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
               decoration: BoxDecoration(
                 color: AppColors.surface,
                 borderRadius: BorderRadius.circular(14),
@@ -648,7 +650,10 @@ class _BookmarksList extends ConsumerWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          surahDisplayName(surah, context.locale.languageCode == 'ar'),
+                          surahDisplayName(
+                            surah,
+                            context.locale.languageCode == 'ar',
+                          ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: TextStyle(
@@ -763,7 +768,10 @@ class _SurahRow extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    surahDisplayName(surah, context.locale.languageCode == 'ar'),
+                    surahDisplayName(
+                      surah,
+                      context.locale.languageCode == 'ar',
+                    ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
@@ -780,7 +788,9 @@ class _SurahRow extends StatelessWidget {
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(
                       fontSize: 10.5,
-                      fontWeight: isPlaying ? FontWeight.w700 : FontWeight.normal,
+                      fontWeight: isPlaying
+                          ? FontWeight.w700
+                          : FontWeight.normal,
                       color: isPlaying
                           ? AppColors.primary
                           : AppColors.textSecondary,
@@ -815,9 +825,7 @@ class _SurahRow extends StatelessWidget {
                       ? Icons.star_rounded
                       : Icons.star_outline_rounded,
                   size: 20,
-                  color: surah.favorite
-                      ? AppColors.gold
-                      : AppColors.iconMuted,
+                  color: surah.favorite ? AppColors.gold : AppColors.iconMuted,
                 ),
               ),
             ),
@@ -898,86 +906,100 @@ class ReciterSheet extends ConsumerWidget {
     final selected = ref.watch(selectedReciterProvider);
     final notifier = ref.read(selectedReciterProvider.notifier);
 
+    // Capped at most of the screen and scrollable inside that. The list
+    // sizes to its contents up to the cap, so a short list still opens as
+    // a short sheet rather than a half-empty tall one.
     return SafeArea(
-      child: Container(
-        decoration: BoxDecoration(
-          color: AppColors.background,
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+      child: ConstrainedBox(
+        constraints: BoxConstraints(
+          maxHeight: MediaQuery.of(context).size.height * 0.75,
         ),
-        padding: const EdgeInsets.fromLTRB(18, 14, 18, 18),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Center(
-              child: Container(
-                width: 36,
-                height: 4,
-                decoration: BoxDecoration(
-                  color: AppColors.divider,
-                  borderRadius: BorderRadius.circular(3),
-                ),
-              ),
-            ),
-            const SizedBox(height: 14),
-            Text(
-              'quran_screen.select_reciter'.tr(),
-              style: TextStyle(
-                fontSize: 14.5,
-                fontWeight: FontWeight.w700,
-                color: AppColors.textPrimary,
-                height: 1.6,
-              ),
-            ),
-            const SizedBox(height: 14),
-            ...kReciters.map((reciter) {
-              final on = reciter.id == selected.id;
-              return Padding(
-                padding: const EdgeInsets.only(bottom: 8),
-                child: GestureDetector(
-                  onTap: () async {
-                    await notifier.select(reciter);
-                    if (context.mounted) Navigator.of(context).pop();
-                  },
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 14,
-                      vertical: 13,
-                    ),
-                    decoration: BoxDecoration(
-                      color: on
-                          ? AppColors.primaryTint
-                          : AppColors.chipBg,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            reciter.nameKey.tr(),
-                            style: TextStyle(
-                              fontSize: 13,
-                              fontWeight: FontWeight.w600,
-                              color: AppColors.textPrimary,
-                            ),
-                          ),
-                        ),
-                        Icon(
-                          on
-                              ? Icons.check_circle_rounded
-                              : Icons.circle_outlined,
-                          size: 18,
-                          color: on
-                              ? AppColors.primary
-                              : AppColors.iconMuted,
-                        ),
-                      ],
-                    ),
+        child: Container(
+          decoration: BoxDecoration(
+            color: AppColors.background,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
+          ),
+          padding: const EdgeInsets.fromLTRB(18, 14, 18, 18),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Center(
+                child: Container(
+                  width: 36,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: AppColors.divider,
+                    borderRadius: BorderRadius.circular(3),
                   ),
                 ),
-              );
-            }),
-          ],
+              ),
+              const SizedBox(height: 14),
+              Text(
+                'quran_screen.select_reciter'.tr(),
+                style: TextStyle(
+                  fontSize: 14.5,
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.textPrimary,
+                  height: 1.6,
+                ),
+              ),
+              const SizedBox(height: 14),
+              Flexible(
+                child: ListView(
+                  shrinkWrap: true,
+                  padding: EdgeInsets.zero,
+                  children: kReciters.map((reciter) {
+                    final on = reciter.id == selected.id;
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 8),
+                      child: GestureDetector(
+                        onTap: () async {
+                          await notifier.select(reciter);
+                          if (context.mounted) Navigator.of(context).pop();
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 14,
+                            vertical: 13,
+                          ),
+                          decoration: BoxDecoration(
+                            color: on
+                                ? AppColors.primaryTint
+                                : AppColors.chipBg,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Row(
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  reciter.nameKey.tr(),
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.w600,
+                                    color: AppColors.textPrimary,
+                                  ),
+                                ),
+                              ),
+                              Icon(
+                                on
+                                    ? Icons.check_circle_rounded
+                                    : Icons.circle_outlined,
+                                size: 18,
+                                color: on
+                                    ? AppColors.primary
+                                    : AppColors.iconMuted,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
+                  }).toList(),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -1122,9 +1144,8 @@ class _OfflineQuranCard extends ConsumerWidget {
               ),
               if (!bulk.running && !complete)
                 GestureDetector(
-                  onTap: () => ref
-                      .read(bulkDownloadProvider.notifier)
-                      .start(reciter),
+                  onTap: () =>
+                      ref.read(bulkDownloadProvider.notifier).start(reciter),
                   child: Container(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 14,
@@ -1376,11 +1397,7 @@ class _DownloadedChip extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
-            Icons.check_circle_rounded,
-            size: 14,
-            color: AppColors.primary,
-          ),
+          Icon(Icons.check_circle_rounded, size: 14, color: AppColors.primary),
           const SizedBox(width: 5),
           Text(
             'quran_screen.offline_done'.tr(),

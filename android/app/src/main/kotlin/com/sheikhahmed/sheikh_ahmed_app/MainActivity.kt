@@ -2,7 +2,10 @@ package com.sheikhahmed.sheikh_ahmed_app
 
 import android.appwidget.AppWidgetManager
 import android.content.ComponentName
+import android.content.Intent
+import android.net.Uri
 import android.os.Build
+import android.provider.Settings
 import com.ryanheise.audioservice.AudioServiceActivity
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.common.MethodChannel
@@ -81,6 +84,16 @@ class MainActivity : AudioServiceActivity() {
                     // Called after Dart writes a fresh snapshot, so a
                     // placed widget picks it up at once instead of at its
                     // next scheduled refresh half an hour later.
+                    // "Appear on top". The app draws nothing over other
+                    // apps; what it needs is the side effect — holding
+                    // this permission exempts the app from Android 12's
+                    // ban on starting a foreground service from the
+                    // background, which is what the adhan does when its
+                    // alarm fires with the app closed.
+                    "canDrawOverlays" -> result.success(canDrawOverlays())
+                    "requestOverlayPermission" -> {
+                        result.success(openOverlaySettings())
+                    }
                     "refreshWidget" -> {
                         AzkarWidgetProvider.refreshAll(this)
                         result.success(null)
@@ -103,6 +116,41 @@ class MainActivity : AudioServiceActivity() {
                     else -> result.notImplemented()
                 }
             }
+    }
+
+    /**
+     * Whether the app may display over other apps.
+     *
+     * True below Android 6, where the permission is granted at install
+     * and there is no screen to send anyone to.
+     */
+    private fun canDrawOverlays(): Boolean {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) return true
+        return Settings.canDrawOverlays(this)
+    }
+
+    /**
+     * Opens the system's "Display over other apps" screen for this app.
+     *
+     * Returns false when there is nothing to open — already granted, or
+     * a device with no such screen, which some manufacturers ship. The
+     * Flutter side needs to tell those two apart from "asked", or it
+     * would leave a row prompting for a permission that cannot be
+     * granted from here.
+     */
+    private fun openOverlaySettings(): Boolean {
+        if (canDrawOverlays()) return false
+        return try {
+            startActivity(
+                Intent(
+                    Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
+                    Uri.parse("package:$packageName"),
+                ).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK),
+            )
+            true
+        } catch (e: Exception) {
+            false
+        }
     }
 
     private fun canPin(): Boolean {

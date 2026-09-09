@@ -14,6 +14,7 @@ import '../../../core/theme/app_text_styles.dart';
 import '../../../core/utils/arabic_numerals.dart';
 import '../../../shared/widgets/khatim_pattern.dart';
 import '../../azkar/presentation/azkar_screen.dart';
+import '../../duas/presentation/duas_screen.dart';
 import '../../prayer/presentation/imsakiya_screen.dart';
 import '../../qibla/presentation/qibla_screen.dart';
 import '../../../core/widget/azkar_widget_channel.dart';
@@ -119,6 +120,14 @@ class HomeScreen extends ConsumerWidget {
                       subtitleKey: 'home.azkar_sub',
                       onTap: () => Navigator.of(context).push(
                         MaterialPageRoute(builder: (_) => const AzkarScreen()),
+                      ),
+                    ),
+                    QuickAccessItem(
+                      icon: Icons.volunteer_activism_rounded,
+                      titleKey: 'home.duas',
+                      subtitleKey: 'home.duas_sub',
+                      onTap: () => Navigator.of(context).push(
+                        MaterialPageRoute(builder: (_) => const DuasScreen()),
                       ),
                     ),
                     QuickAccessItem(

@@ -39,7 +39,9 @@
     "exact_alarms_body": "To hear the full adhan exactly on time, allow \"Alarms & reminders\" for this app in system settings.",
     "exact_alarms_action": "Enable now",
     "imsakiya": "Monthly Imsakiya",
-    "imsakiya_sub": "The whole month at a glance"
+    "imsakiya_sub": "The whole month at a glance",
+    "duas": "Supplications",
+    "duas_sub": "Prophetic du'as"
   },
   "prayers": {
     "fajr": "Fajr",
@@ -285,7 +287,22 @@
     "shur": "Saud Al-Shuraim",
     "basit": "Abdulbasit Abdulsamad",
     "husr": "Mahmoud Khalil Al-Husary",
-    "minsh": "Mohamed Siddiq Al-Minshawi"
+    "minsh": "Mohamed Siddiq Al-Minshawi",
+    "maher": "Maher Al Muaiqly",
+    "s_gmd": "Saad Al Ghamdi",
+    "shatri": "Abu Bakr Ash-Shatri",
+    "ajm": "Ahmad Al Ajmi",
+    "qtm": "Nasser Al Qatami",
+    "hani": "Hani Ar-Rifai",
+    "yasser": "Yasser Ad-Dossari",
+    "frs_a": "Fares Abbad",
+    "ayyub": "Muhammad Ayyoub",
+    "hthfi": "Ali Al Hudhaify",
+    "jbrl": "Muhammad Jibreel",
+    "bsfr": "Abdullah Basfar",
+    "mtrod": "Abdullah Al Matroud",
+    "bu_khtr": "Salah Bukhatir",
+    "jhn": "Abdullah Al Juhany"
   },
   "memorization_screen": {
     "title": "Memorization",
@@ -336,7 +353,10 @@
     "daily_progress": "Daily progress",
     "tap_to_count": "Tap the circle to count",
     "of": "of",
-    "ruqyah": "Ruqyah"
+    "ruqyah": "Ruqyah",
+    "waking": "Waking",
+    "food": "Food",
+    "adhan": "Adhan"
   },
   "tasbeeh": {
     "title": "Tasbeeh",
@@ -431,7 +451,9 @@
     "select_method": "Select calculation method",
     "madhab": "Madhab",
     "exact_alarms": "Alarms & reminders",
-    "exact_alarms_sub": "Turn on so the adhan arrives exactly on time"
+    "exact_alarms_sub": "Turn on so the adhan arrives exactly on time",
+    "appear_on_top": "Appear on top",
+    "appear_on_top_sub": "Lets the adhan sound while the app is closed — the app never draws anything over your apps"
   },
   "calculation_methods": {
     "dubai": "Dubai",
@@ -532,7 +554,9 @@
     "saffat_opening": "Recite the first ten verses of Surah As-Saffat",
     "rahman_challenge": "Recite Surah Ar-Rahman 33-36",
     "hashr_closing": "Recite the closing verses of Surah Al-Hashr 21-24",
-    "jinn_opening": "Recite the first nine verses of Surah Al-Jinn"
+    "jinn_opening": "Recite the first nine verses of Surah Al-Jinn",
+    "shifa_verses": "Recite the six verses of healing",
+    "imran_closing": "Recite the closing verses of Surah Al Imran 190-200"
   },
   "imsakiya": {
     "title": "Monthly Imsakiya",
@@ -592,5 +616,19 @@
     "idgham_shafawi": "Idgham shafawi",
     "iqlab": "Iqlab",
     "ghunnah": "Ghunnah"
+  },
+  "duas_screen": {
+    "title": "Supplications",
+    "subtitle": "Prophetic du'as, grouped by what you are asking for",
+    "guidance": "Guidance",
+    "distress": "Worry and hardship",
+    "provision": "Provision",
+    "ease": "Ease and knowledge",
+    "family": "Family and parents",
+    "istighfar": "Seeking forgiveness",
+    "tawbah": "Repentance",
+    "health": "Health and healing",
+    "protection": "Protection",
+    "hereafter": "The hereafter"
   }
 }

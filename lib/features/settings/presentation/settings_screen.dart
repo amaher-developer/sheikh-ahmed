@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/adhan/adhan_audio.dart';
 import '../../../core/adhan/adhan_providers.dart';
 import '../../../core/adhan/exact_alarm_providers.dart';
+import '../../../core/adhan/overlay_providers.dart';
 import '../../../core/app_restart.dart';
 import '../../../core/audio/audio_providers.dart';
 import '../../../core/prayer/location_service.dart';
@@ -52,6 +53,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     final adhanSettings = ref.watch(adhanSettingsProvider);
     final notificationTypes = ref.watch(notificationTypeSettingsProvider);
     final exactAlarmsAllowed = ref.watch(exactAlarmsAllowedProvider);
+    final canAppearOnTop = ref.watch(overlayPermissionProvider);
 
     return CustomScrollView(
       slivers: [
@@ -286,6 +288,28 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                     ),
                     onTap: ref
                         .read(exactAlarmsAllowedProvider.notifier)
+                        .request,
+                  ),
+                ],
+                // Same rule as the row above: shown only while it is
+                // actually off. It is the second exemption that lets the
+                // adhan start its player from the background, and on
+                // phones with aggressive battery managers it is often
+                // the one still standing.
+                if (!canAppearOnTop) ...[
+                  const SizedBox(height: 10),
+                  _SettingsRow(
+                    icon: Icons.layers_rounded,
+                    titleKey: 'settings_screen.appear_on_top',
+                    subtitleKey: 'settings_screen.appear_on_top_sub',
+                    gold: true,
+                    trailing: Icon(
+                      Icons.chevron_left_rounded,
+                      size: 18,
+                      color: AppColors.iconMuted,
+                    ),
+                    onTap: ref
+                        .read(overlayPermissionProvider.notifier)
                         .request,
                   ),
                 ],

@@ -109,6 +109,9 @@ class _AzkarScreenState extends ConsumerState<AzkarScreen> {
     'sleep': Icons.bedtime_rounded,
     'prayer': Icons.mosque_rounded,
     'ruqyah': Icons.healing_rounded,
+    'waking': Icons.wb_sunny_rounded,
+    'food': Icons.restaurant_rounded,
+    'adhan': Icons.campaign_rounded,
   };
 
   @override

@@ -36,10 +36,12 @@ void main() {
     test('closes the recitation with the three, three times each', () {
       // Separate items, as in the morning and evening lists: bundling them
       // makes three taps stand for nine recitations.
+      // Length checked before reading .single: the six verses of healing
+      // are one item with six references, and .single throws on it.
       final three = ruqyah.items.where(
-        (i) => const [112, 113, 114].contains(
-          i.quranRefs.isEmpty ? 0 : i.quranRefs.single.surahNumber,
-        ),
+        (i) =>
+            i.quranRefs.length == 1 &&
+            const [112, 113, 114].contains(i.quranRefs.single.surahNumber),
       ).toList();
 
       expect(three.map((i) => i.quranRefs.single.surahNumber), [112, 113, 114]);

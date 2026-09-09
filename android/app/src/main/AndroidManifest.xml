@@ -39,6 +39,18 @@
          memorization_screen.dart) — the user records themselves reciting,
          purely for their own playback, never sent anywhere. -->
     <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+    <!-- "Appear on top" / display over other apps.
+         Not used to draw anything over other apps. It is declared for the
+         one thing it also does: from Android 12, an app may not start a
+         foreground service while it is in the background, and holding this
+         permission is one of the documented exemptions from that rule. The
+         adhan is exactly that case — an alarm fires while the app is closed
+         and has to start the playback service to sound the call. Without an
+         exemption the start is refused and the adhan falls back to a plain
+         notification (see AdhanAlarmReceiver's catch, which posts one).
+         Never granted at install; the user turns it on from Settings, where
+         it is explained (see overlayPermissionProvider). -->
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
     <application
         android:label="Sheikh Ahmed"
         android:name="${applicationName}"
