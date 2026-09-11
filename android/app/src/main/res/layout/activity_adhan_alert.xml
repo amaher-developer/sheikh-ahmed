@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The screen the adhan puts over whatever the phone is showing.
+
+  layoutDirection is forced RTL for the same reason the widget forces it:
+  the content is Arabic and this window is created by a receiver, outside
+  the app's own locale, which on many phones is English.
+
+  Colours are literals rather than theme references. This is inflated from a
+  broadcast receiver on a phone that may have been idle since last night,
+  and the fewer resources it has to resolve to get on screen, the fewer ways
+  that has of going wrong. They are the app's own — AppColors.primaryDark,
+  gold and goldLight.
+
+  Fonts come from res/font rather than the Flutter asset bundle, which this
+  window cannot reach: no engine is running. Cairo for the interface, the
+  same face the app uses.
+-->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layoutDirection="rtl"
+    android:background="@drawable/alert_background">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:paddingStart="30dp"
+        android:paddingEnd="30dp">
+
+        <!-- The eight-point star the app marks a section with, standing in
+             for an icon: it is the app's mark, and it reads at a glance from
+             across a dark room. -->
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/khatim_tile"
+            android:tint="#E0B45F"
+            android:contentDescription="@null"
+            android:layout_marginBottom="22dp" />
+
+        <TextView
+            android:id="@+id/adhan_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/adhan_alert_label"
+            android:fontFamily="@font/cairo"
+            android:textColor="#E0B45F"
+            android:textSize="15sp"
+            android:letterSpacing="0.10"
+            android:layout_marginBottom="10dp" />
+
+        <!-- The prayer name, at the size that answers the question from
+             arm's length without being read. -->
+        <TextView
+            android:id="@+id/adhan_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/adhan_alert_title"
+            android:fontFamily="@font/cairo"
+            android:textColor="#FFFFFF"
+            android:textSize="40sp"
+            android:textStyle="bold"
+            android:lineSpacingMultiplier="1.15" />
+
+        <!-- A hairline between the name and the call, in gold. -->
+        <View
+            android:layout_width="86dp"
+            android:layout_height="1dp"
+            android:background="#B0813A"
+            android:layout_marginTop="18dp"
+            android:layout_marginBottom="18dp" />
+
+        <TextView
+            android:id="@+id/adhan_body"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/adhan_alert_body"
+            android:fontFamily="@font/scheherazade_bold"
+            android:textColor="#CFE0CF"
+            android:textSize="19sp"
+            android:lineSpacingMultiplier="1.25" />
+
+        <TextView
+            android:id="@+id/adhan_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/cairo"
+            android:textColor="#A8C4A8"
+            android:textSize="14sp"
+            android:letterSpacing="0.06"
+            android:layout_marginTop="16dp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:orientation="vertical"
+        android:paddingStart="26dp"
+        android:paddingEnd="26dp"
+        android:paddingBottom="40dp">
+
+        <!-- Stop first and in gold: it is what someone reaching for a
+             sounding phone at Fajr is looking for. -->
+        <TextView
+            android:id="@+id/adhan_stop"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/adhan_alert_stop"
+            android:fontFamily="@font/cairo"
+            android:textStyle="bold"
+            android:textColor="#17251B"
+            android:textSize="17sp"
+            android:background="@drawable/alert_button_gold"
+            android:paddingTop="17dp"
+            android:paddingBottom="17dp"
+            android:clickable="true"
+            android:focusable="true" />
+
+        <TextView
+            android:id="@+id/adhan_dismiss"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/adhan_alert_dismiss"
+            android:fontFamily="@font/cairo"
+            android:textColor="#A8C4A8"
+            android:textSize="14.5sp"
+            android:background="@drawable/alert_button_ghost"
+            android:paddingTop="14dp"
+            android:paddingBottom="14dp"
+            android:layout_marginTop="12dp"
+            android:clickable="true"
+            android:focusable="true" />
+    </LinearLayout>
+</FrameLayout>

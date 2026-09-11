@@ -224,6 +224,7 @@ class AdhanPlaybackService : Service() {
         super.onDestroy()
     }
 
+
     private fun startForegroundWithNotification(title: String, body: String) {
         val manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -258,12 +259,14 @@ class AdhanPlaybackService : Service() {
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE,
         )
 
+
         val notification = NotificationCompat.Builder(this, CHANNEL_ID)
             .setSmallIcon(R.mipmap.ic_launcher)
             .setContentTitle(title)
             .setContentText(body)
             .setCategory(NotificationCompat.CATEGORY_ALARM)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
+
             .setOngoing(true)
             .setSilent(true)
             .setContentIntent(contentIntent)

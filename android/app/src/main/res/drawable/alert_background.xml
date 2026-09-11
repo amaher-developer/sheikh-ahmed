@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The ground both alert screens sit on: the app's deep green, shaded, with
+  the khatim motif over it.
+
+  Same construction as azkar_widget_background — a tiled bitmap rather than a
+  vector, because a vector is scaled to fill and the eight-point stars come
+  out elliptical at any aspect ratio but the tile's own. Here the tile runs
+  edge to edge (no inset) because this fills the whole window, so there are
+  no rounded corners for it to spill past.
+
+  Colours are the app's: AppColors.primaryDark (#1C3325) into a darker
+  bottom, which keeps the prayer name legible over the pattern while the
+  motif stays visible at the top where there is nothing else.
+-->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="rectangle">
+            <gradient
+                android:startColor="#22402C"
+                android:centerColor="#1C3325"
+                android:endColor="#101E16"
+                android:angle="270" />
+        </shape>
+    </item>
+    <item>
+        <bitmap
+            android:src="@drawable/khatim_tile"
+            android:tileMode="repeat"
+            android:alpha="0.35"
+            android:gravity="top|start" />
+    </item>
+</layer-list>

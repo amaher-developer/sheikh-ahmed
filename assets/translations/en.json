@@ -41,7 +41,10 @@
     "imsakiya": "Monthly Imsakiya",
     "imsakiya_sub": "The whole month at a glance",
     "duas": "Supplications",
-    "duas_sub": "Prophetic du'as"
+    "duas_sub": "Prophetic du'as",
+    "appear_on_top_title": "Let the adhan reach your screen",
+    "appear_on_top_body": "Turn on “Appear on top” so the adhan and the dhikr show on screen, not only in your notifications",
+    "appear_on_top_action": "Turn it on"
   },
   "prayers": {
     "fajr": "Fajr",

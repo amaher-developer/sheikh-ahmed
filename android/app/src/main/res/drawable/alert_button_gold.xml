@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The stop control. Gold on green, the app's own pairing, and a pill
+     rather than a rectangle so it reads as the one thing to press. -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <gradient
+        android:startColor="#E0B45F"
+        android:endColor="#C4923D"
+        android:angle="270" />
+    <corners android:radius="34dp" />
+</shape>

@@ -416,6 +416,23 @@ class AdhanRescheduler {
               channelName: 'adhan.dhikr_channel_name'.tr(),
             ));
 
+        // The same reminders again, as a card over other apps. Built from
+        // the one list scheduleHourlyDhikr uses, so the card and the
+        // notification are the same dhikr at the same minute — and the
+        // native side draws nothing unless "Appear on top" is granted, so
+        // this costs nothing on a phone where it is off.
+        await _guarded('dhikr cards', () async {
+          final reminders = dhikrReminderInstants(
+            hours: kDhikrReminderHours,
+            phraseFor: dhikrPhrase,
+          );
+          await AdhanAlarmChannel.scheduleZikr(
+            times: [for (final r in reminders) r.at],
+            texts: [for (final r in reminders) r.text],
+            clearUpTo: kZikrAlarmSlots,
+          );
+        });
+
         await _guarded('weekly mission', () => scheduler.scheduleWeekly(
           baseId: kWeeklyMissionReminderBaseId,
           timeOfDay: (weekStart) =>
@@ -451,6 +468,9 @@ class AdhanRescheduler {
           baseId: kDhikrReminderBaseId,
           days: 7 * kDhikrReminderHours.length,
         );
+        // And the cards, or they would keep appearing over other apps after
+        // the reminders they belong to were switched off.
+        await AdhanAlarmChannel.cancelZikr(kZikrAlarmSlots);
       }
 
       // Outside both branches on purpose: the home-screen widget shows the

@@ -5,6 +5,7 @@ import '../../../core/home/daily_quote_data.dart';
 import '../../../core/home/quick_access_usage.dart';
 import '../../../core/home/weekly_mission_providers.dart';
 import '../../../core/adhan/exact_alarm_providers.dart';
+import '../../../core/adhan/overlay_providers.dart';
 import '../../../core/prayer/prayer_providers.dart';
 import '../../../core/prayer/prayer_settings.dart';
 import '../../../core/prayer/prayer_times_service.dart';
@@ -72,6 +73,18 @@ class HomeScreen extends ConsumerWidget {
                 // Settings.
                 if (!ref.watch(exactAlarmsAllowedProvider)) ...[
                   const _ExactAlarmBanner(),
+                  const SizedBox(height: 14),
+                ],
+                // Second, and only once the first is dealt with. Both at
+                // once is two system screens to visit before the app has
+                // shown anything, which is how people decide an app is
+                // demanding and close it. This one is the difference
+                // between the adhan appearing on screen and only
+                // sounding, so it earns a place — after the one that
+                // decides whether it sounds at all.
+                if (ref.watch(exactAlarmsAllowedProvider) &&
+                    !ref.watch(overlayPermissionProvider)) ...[
+                  const _AppearOnTopBanner(),
                   const SizedBox(height: 14),
                 ],
                 PrayerCard(
@@ -813,6 +826,86 @@ class _ExactAlarmBanner extends ConsumerWidget {
                     ),
                     child: Text(
                       'home.exact_alarms_action'.tr(),
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        fontSize: 11.5,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Prompts for "Appear on top", which is what puts the adhan and the
+/// dhikr on screen rather than only in the notification shade.
+///
+/// Offered here as well as in Settings because a permission nobody finds
+/// is a permission nobody grants — and this is the one people expect to
+/// have been asked for: they know other apps do this, and its absence
+/// reads as the feature being broken rather than switched off.
+class _AppearOnTopBanner extends ConsumerWidget {
+  const _AppearOnTopBanner();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Container(
+      padding: const EdgeInsets.all(14),
+      decoration: BoxDecoration(
+        color: AppColors.primaryTint,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: AppColors.primary.withValues(alpha: 0.28)),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(Icons.layers_rounded, size: 20, color: AppColors.primary),
+          const SizedBox(width: 11),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'home.appear_on_top_title'.tr(),
+                  style: TextStyle(
+                    fontSize: 12.5,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.textPrimary,
+                    height: 1.5,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  'home.appear_on_top_body'.tr(),
+                  style: TextStyle(
+                    fontSize: 11,
+                    color: AppColors.textSecondary,
+                    height: 1.6,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                GestureDetector(
+                  onTap: ref
+                      .read(overlayPermissionProvider.notifier)
+                      .request,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 8,
+                    ),
+                    decoration: BoxDecoration(
+                      color: AppColors.primary,
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    child: Text(
+                      'home.appear_on_top_action'.tr(),
                       textAlign: TextAlign.center,
                       style: const TextStyle(
                         fontSize: 11.5,

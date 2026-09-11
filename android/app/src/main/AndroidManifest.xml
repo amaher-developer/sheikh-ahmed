@@ -39,17 +39,30 @@
          memorization_screen.dart) — the user records themselves reciting,
          purely for their own playback, never sent anywhere. -->
     <uses-permission android:name="android.permission.RECORD_AUDIO"/>
-    <!-- "Appear on top" / display over other apps.
-         Not used to draw anything over other apps. It is declared for the
-         one thing it also does: from Android 12, an app may not start a
-         foreground service while it is in the background, and holding this
-         permission is one of the documented exemptions from that rule. The
-         adhan is exactly that case — an alarm fires while the app is closed
-         and has to start the playback service to sound the call. Without an
-         exemption the start is refused and the adhan falls back to a plain
-         notification (see AdhanAlarmReceiver's catch, which posts one).
-         Never granted at install; the user turns it on from Settings, where
-         it is explained (see overlayPermissionProvider). -->
+    <!-- "Appear on top" / display over other apps. Used for two things.
+         First, literally: at the prayer time the app puts the adhan screen
+         (AdhanAlertActivity) over whatever the phone is showing, with the
+         prayer name and a stop button, the way an alarm clock does. Starting
+         an activity from the background is only allowed to an app holding
+         this permission.
+         Second, as an exemption: from Android 12 an app may not start a
+         foreground service while in the background, and holding this is one
+         of the documented ways out. The adhan is exactly that case — an
+         alarm fires with the app closed and has to start the playback
+         service to sound the call.
+         Never granted at install; the user turns it on from Settings and
+         from a card on the home screen, where it is explained (see
+         overlayPermissionProvider). Without it the adhan still sounds and
+         still notifies — only the screen is missing.
+
+         It is the *only* route now. There was a second, on a full-screen
+         intent attached to the adhan notification, dropped along with
+         USE_FULL_SCREEN_INTENT: Play pre-grants that permission to
+         alarm-clock and calling apps alone, this app is neither, and saying
+         otherwise on their declaration form would be a false declaration —
+         the same reasoning that keeps SCHEDULE_EXACT_ALARM above rather
+         than USE_EXACT_ALARM. Without the pre-grant Android would have
+         downgraded it to a floating notification anyway. -->
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
     <application
         android:label="Sheikh Ahmed"
@@ -117,6 +130,64 @@
             android:name=".AdhanPlaybackService"
             android:foregroundServiceType="mediaPlayback"
             android:exported="false" />
+
+        <!-- The screen the adhan puts over whatever is showing. Not a
+             Flutter activity: it is opened by a broadcast receiver at
+             the moment the alarm fires, and starting an engine to draw
+             a prayer name would add seconds and a lot that can fail.
+             excludeFromRecents because it is an alert, not a place you
+             navigate back to; noHistory so it cannot be resumed later
+             from a stale task. -->
+        <activity
+            android:name=".AdhanAlertActivity"
+            android:exported="false"
+            android:launchMode="singleTask"
+            android:taskAffinity=""
+            android:excludeFromRecents="true"
+            android:noHistory="true"
+            android:showOnLockScreen="true"
+            android:turnScreenOn="true"
+            android:theme="@android:style/Theme.Material.NoActionBar" />
+
+        <!-- The dhikr card over other apps. Transparent and
+             non-modal: touches outside it go to whatever is
+             underneath, so it sits over what the phone was doing
+             rather than interrupting it. -->
+        <activity
+            android:name=".ZikrAlertActivity"
+            android:exported="false"
+            android:launchMode="singleTask"
+            android:taskAffinity=""
+            android:excludeFromRecents="true"
+            android:noHistory="true"
+            android:showOnLockScreen="true"
+            android:theme="@style/ZikrAlertTheme" />
+
+        <!-- Fires the card. Separate from the adhan receiver: the two
+             use different alarm kinds on purpose — see the class. -->
+        <receiver
+            android:name=".ZikrAlarmReceiver"
+            android:exported="false" />
+
+        <!-- Puts the adhan alarms back after a reboot, an app update,
+             or a clock change. Android drops every alarm at each of
+             those, and the boot receiver below belongs to
+             flutter_local_notifications and only restores the
+             *notification* alarms — the adhan runs on alarm-clock
+             alarms set natively, which nothing was restoring. A phone
+             rebooted overnight lost Fajr. -->
+        <receiver
+            android:name=".AdhanBootReceiver"
+            android:exported="false">
+          <intent-filter>
+            <action android:name="android.intent.action.BOOT_COMPLETED"/>
+            <action android:name="android.intent.action.MY_PACKAGE_REPLACED"/>
+            <action android:name="android.intent.action.QUICKBOOT_POWERON"/>
+            <action android:name="com.htc.intent.action.QUICKBOOT_POWERON"/>
+            <action android:name="android.intent.action.TIME_SET"/>
+            <action android:name="android.intent.action.TIMEZONE_CHANGED"/>
+          </intent-filter>
+        </receiver>
 
         <!-- Wakes at the prayer time and starts the service above. -->
         <receiver

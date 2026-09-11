@@ -84,15 +84,38 @@ class MainActivity : AudioServiceActivity() {
                     // Called after Dart writes a fresh snapshot, so a
                     // placed widget picks it up at once instead of at its
                     // next scheduled refresh half an hour later.
-                    // "Appear on top". The app draws nothing over other
-                    // apps; what it needs is the side effect — holding
-                    // this permission exempts the app from Android 12's
-                    // ban on starting a foreground service from the
-                    // background, which is what the adhan does when its
-                    // alarm fires with the app closed.
+                    // "Appear on top", which the app uses for two things:
+                    // putting the adhan screen and the dhikr card over
+                    // whatever is showing, and — as a side effect of holding
+                    // it — the exemption from Android 12's ban on starting a
+                    // foreground service from the background, which is what
+                    // the adhan does when its alarm fires with the app
+                    // closed.
                     "canDrawOverlays" -> result.success(canDrawOverlays())
                     "requestOverlayPermission" -> {
                         result.success(openOverlaySettings())
+                    }
+                    // The dhikr cards. Scheduled from the same Dart call
+                    // that schedules the dhikr notifications, so the card
+                    // and the notification cannot drift onto different
+                    // times.
+                    "scheduleZikrAlarms" -> {
+                        val times = call.argument<List<Long>>("times")
+                        val texts = call.argument<List<String>>("texts")
+                        val clearUpTo = call.argument<Int>("clearUpTo") ?: 0
+                        if (times == null || texts == null) {
+                            result.success(false)
+                            return@setMethodCallHandler
+                        }
+                        ZikrAlarmReceiver.schedule(this, times, texts, clearUpTo)
+                        result.success(true)
+                    }
+                    "cancelZikrAlarms" -> {
+                        ZikrAlarmReceiver.cancelAll(
+                            this,
+                            call.argument<Int>("count") ?: 0,
+                        )
+                        result.success(null)
                     }
                     "refreshWidget" -> {
                         AzkarWidgetProvider.refreshAll(this)

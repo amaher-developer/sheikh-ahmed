@@ -25,6 +25,42 @@ class AdhanAlarmChannel {
   /// sound.
   static bool get isSupported => defaultTargetPlatform == TargetPlatform.android;
 
+  /// Replaces every scheduled dhikr card.
+  ///
+  /// Separate from the dhikr *notification*, which is unchanged and
+  /// still posted by flutter_local_notifications. This only adds the
+  /// card over other apps, and the native side shows nothing unless
+  /// the user has granted "Appear on top".
+  static Future<bool> scheduleZikr({
+    required List<DateTime> times,
+    required List<String> texts,
+    required int clearUpTo,
+  }) async {
+    if (!isSupported) return false;
+    try {
+      final ok = await _channel.invokeMethod<bool>('scheduleZikrAlarms', {
+        'times': [for (final t in times) t.millisecondsSinceEpoch],
+        'texts': texts,
+        'clearUpTo': clearUpTo,
+      });
+      return ok ?? false;
+    } catch (_) {
+      return false;
+    }
+  }
+
+  /// Clears them — used when the reminders are switched off.
+  static Future<void> cancelZikr(int count) async {
+    if (!isSupported) return;
+    try {
+      await _channel.invokeMethod<void>('cancelZikrAlarms', {
+        'count': count,
+      });
+    } catch (_) {
+      // Nothing to cancel, or no native side. Not worth surfacing.
+    }
+  }
+
   /// Replaces every scheduled adhan alarm.
   ///
   /// [times] must already be in the future — a past alarm fires the moment

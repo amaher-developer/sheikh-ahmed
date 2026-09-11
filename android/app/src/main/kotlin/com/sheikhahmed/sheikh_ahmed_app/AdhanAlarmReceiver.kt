@@ -6,6 +6,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import android.provider.Settings
 import androidx.core.content.ContextCompat
 
 /**
@@ -22,6 +23,30 @@ import androidx.core.content.ContextCompat
 class AdhanAlarmReceiver : BroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
+        val title = intent.getStringExtra(AdhanPlaybackService.EXTRA_TITLE)
+        val body = intent.getStringExtra(AdhanPlaybackService.EXTRA_BODY)
+
+        // The screen over whatever the phone is showing, which is what the
+        // user granted "Appear on top" for. Attempted before the service so
+        // it is up while the audio is still spinning its MediaPlayer.
+        //
+        // Only possible while the app holds SYSTEM_ALERT_WINDOW: Android
+        // otherwise refuses activity starts from the background silently —
+        // no exception, the call simply does nothing — which is why the
+        // permission is checked rather than the start being wrapped in a
+        // try/catch and assumed to have worked. Where it is off, the
+        // notification's full-screen intent is the other route in.
+        if (canDrawOverlays(context)) {
+            try {
+                context.startActivity(
+                    AdhanAlertActivity.intent(context, title, body),
+                )
+            } catch (e: Exception) {
+                // A device that refuses it anyway. The adhan below is the
+                // point; the screen is not worth failing the prayer over.
+            }
+        }
+
         val service = Intent(context, AdhanPlaybackService::class.java)
             .putExtra(
                 AdhanPlaybackService.EXTRA_TITLE,
@@ -50,6 +75,12 @@ class AdhanAlarmReceiver : BroadcastReceiver() {
                 intent.getStringExtra(AdhanPlaybackService.EXTRA_BODY),
             )
         }
+    }
+
+    /** True below Android 6, where the permission is granted at install. */
+    private fun canDrawOverlays(context: Context): Boolean {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) return true
+        return Settings.canDrawOverlays(context)
     }
 
     companion object {
@@ -93,6 +124,7 @@ class AdhanAlarmReceiver : BroadcastReceiver() {
             body: String,
             res: String,
             clearUpTo: Int,
+            persist: Boolean = true,
         ): Boolean {
             val manager =
                 context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
@@ -124,6 +156,14 @@ class AdhanAlarmReceiver : BroadcastReceiver() {
                 )
                 manager.setAlarmClock(AlarmManager.AlarmClockInfo(at, pi), pi)
             }
+
+            // Kept so [AdhanBootReceiver] can put these back. Android
+            // drops every alarm on reboot and on app update, and nothing
+            // else knows what they were — the prayer calculation lives in
+            // Dart, which is not running at either moment.
+            if (persist) {
+                AdhanSchedule.save(context, times, titles, body, res)
+            }
             return true
         }
 
@@ -133,6 +173,9 @@ class AdhanAlarmReceiver : BroadcastReceiver() {
             for (i in 0 until count) {
                 manager.cancel(pendingIntent(context, i, null, null, null))
             }
+            // Or the boot receiver would faithfully restore a schedule
+            // the user has just switched off.
+            AdhanSchedule.clear(context)
         }
     }
 }

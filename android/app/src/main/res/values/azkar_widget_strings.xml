@@ -6,6 +6,24 @@
          entry reads "Sheikh Ahmed" with no hint of what the widget does. -->
     <string name="widget_label">أذكار</string>
     <string name="widget_description">مواقيت الصلاة والتاريخ الهجري ومهمة الأسبوع وذكر متغيّر</string>
+    <!-- The full-screen adhan alert (AdhanAlertActivity). Native
+         strings rather than the Flutter translations: this screen is
+         built by a broadcast receiver with no Flutter engine running,
+         so it cannot reach them. The prayer name itself does come
+         from Dart, in the alarm's extras, and replaces the title
+         below. -->
+    <string name="adhan_alert_label">حان الآن موعد</string>
+    <string name="adhan_alert_title">الصلاة</string>
+    <string name="adhan_alert_body">حيّ على الصلاة · حيّ على الفلاح</string>
+    <string name="adhan_alert_stop">إيقاف الأذان</string>
+    <string name="adhan_alert_dismiss">إغلاق مع استمرار الأذان</string>
+    <!-- The dhikr card (ZikrAlertActivity). Native strings for the
+         same reason as the adhan alert: no Flutter engine is running
+         when a receiver builds this. The dhikr itself comes from Dart
+         in the alarm's extras. -->
+    <string name="zikr_alert_label">ذكر</string>
+    <string name="zikr_alert_fallback">سُبْحَانَ اللَّهِ وَبِحَمْدِهِ</string>
+    <string name="zikr_alert_hint">اضغط للإغلاق</string>
     <string name="widget_mission_label">مهمة الأسبوع</string>
     <string name="widget_next_label">الصلاة القادمة</string>
     <!--

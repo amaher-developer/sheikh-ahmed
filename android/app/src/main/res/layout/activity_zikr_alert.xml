@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The dhikr card that appears over whatever is on screen and goes away by
+  itself.
+
+  Deliberately a card near the top rather than a full-screen takeover: a
+  dhikr is a nudge, not an alarm. Taking the whole screen for it several
+  times a day would make people turn the feature off — which is the same
+  reasoning that put the reminder hours on a waking-hours list rather than
+  an every-N-hours interval (see scheduleHourlyDhikr).
+
+  The window behind this is transparent and passes touches through outside
+  the card, so whatever the phone was doing carries on underneath.
+-->
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layoutDirection="rtl">
+
+    <LinearLayout
+        android:id="@+id/zikr_card"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="top"
+        android:layout_marginStart="14dp"
+        android:layout_marginEnd="14dp"
+        android:layout_marginTop="52dp"
+        android:orientation="vertical"
+        android:gravity="center_horizontal"
+        android:background="@drawable/zikr_card_background"
+        android:elevation="12dp"
+        android:paddingStart="22dp"
+        android:paddingEnd="22dp"
+        android:paddingTop="18dp"
+        android:paddingBottom="18dp"
+        android:clickable="true"
+        android:focusable="true">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="12dp">
+
+            <ImageView
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:src="@drawable/khatim_tile"
+                android:contentDescription="@null" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/zikr_alert_label"
+                android:fontFamily="@font/cairo"
+                android:textColor="#E0B45F"
+                android:textSize="12.5sp"
+                android:letterSpacing="0.08"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp" />
+
+            <ImageView
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:src="@drawable/khatim_tile"
+                android:contentDescription="@null" />
+        </LinearLayout>
+
+        <!-- The dhikr itself, in the Mus'haf face: it is the one thing on
+             the card and it is what the glance is for. -->
+        <TextView
+            android:id="@+id/zikr_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:fontFamily="@font/scheherazade_bold"
+            android:textColor="#FFFFFF"
+            android:textSize="30sp"
+            android:lineSpacingMultiplier="1.4"
+            android:text="@string/zikr_alert_fallback" />
+
+        <TextView
+            android:id="@+id/zikr_hint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/zikr_alert_hint"
+            android:fontFamily="@font/cairo"
+            android:textColor="#8FAE97"
+            android:textSize="11.5sp"
+            android:layout_marginTop="12dp" />
+    </LinearLayout>
+</FrameLayout>

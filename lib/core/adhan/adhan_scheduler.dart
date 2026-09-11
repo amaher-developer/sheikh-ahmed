@@ -394,27 +394,26 @@ class AdhanScheduler {
     ensureTimezonesInitialised();
     await cancelDaily(baseId: baseId, days: days * hours.length);
 
-    final start = now ?? DateTime.now();
-    var slot = 0;
-    for (var dayOffset = 0; dayOffset < days; dayOffset++) {
-      final date = DateTime(
-        start.year,
-        start.month,
-        start.day,
-      ).add(Duration(days: dayOffset));
-      for (final hour in hours) {
-        final at = DateTime(date.year, date.month, date.day, hour);
+    // The same list the card over other apps is built from — see
+    // [dhikrReminderInstants]. Shared rather than recomputed so the two
+    // cannot land on different minutes.
+    final reminders = dhikrReminderInstants(
+      hours: hours,
+      phraseFor: phraseFor,
+      days: days,
+      now: now,
+    );
+
+    for (var slot = 0; slot < reminders.length; slot++) {
+      final reminder = reminders[slot];
+      {
         final id = baseId + slot;
-        slot++;
-        if (!at.isAfter(start)) continue;
 
         await _schedule(
           id: id,
           title: title,
-          // Indexed by absolute slot, not by hour, so the phrase advances
-          // across days instead of showing the same one every day at 9am.
-          body: phraseFor(dayOffset * hours.length + hours.indexOf(hour)),
-          at: at,
+          body: reminder.text,
+          at: reminder.at,
           details: NotificationDetails(
             android: AndroidNotificationDetails(
               channelId,
@@ -501,6 +500,59 @@ class UpcomingPrayer {
 /// shrinks — fewer days, adhan switched off — clears the slots it no
 /// longer fills instead of leaving orphaned alarms behind.
 const kAdhanAlarmSlots = 7 * 5;
+
+/// How many alarm slots the native side reserves for the dhikr cards.
+///
+/// A fixed ceiling of 7 days x 8 reminders rather than the length of
+/// [kDhikrReminderHours], because the native side cancels this many
+/// slots and cannot read a Dart constant: shortening the hours list
+/// must still clear the slots the longer one filled.
+const kZikrAlarmSlots = 7 * 8;
+
+/// One dhikr reminder: when, and what it says.
+class DhikrReminder {
+  final DateTime at;
+  final String text;
+
+  const DhikrReminder({required this.at, required this.text});
+}
+
+/// Every dhikr reminder still ahead, in order.
+///
+/// Both the notification and the card over other apps are built from
+/// this one list. Computing them separately would let the two drift
+/// onto different minutes, and a card that does not match the
+/// notification beside it reads as a bug in both.
+List<DhikrReminder> dhikrReminderInstants({
+  required List<int> hours,
+  required String Function(int index) phraseFor,
+  int days = 7,
+  DateTime? now,
+}) {
+  final start = now ?? DateTime.now();
+  final result = <DhikrReminder>[];
+  for (var dayOffset = 0; dayOffset < days; dayOffset++) {
+    final date = DateTime(
+      start.year,
+      start.month,
+      start.day,
+    ).add(Duration(days: dayOffset));
+    for (var i = 0; i < hours.length; i++) {
+      final at = DateTime(date.year, date.month, date.day, hours[i]);
+      if (!at.isAfter(start)) continue;
+      result.add(
+        DhikrReminder(
+          // Indexed by absolute slot, not by hour, so the phrase
+          // advances across days instead of showing the same one
+          // every day at 9am.
+          at: at,
+          text: phraseFor(dayOffset * hours.length + i),
+        ),
+      );
+    }
+  }
+  return result;
+}
 
 /// Every prayer instant in the next [days] days that is still in the
 /// future, in order.
