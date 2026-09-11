@@ -187,19 +187,22 @@ class HomeScreen extends ConsumerWidget {
                     ),
                     // Moved out of Settings: adding a home-screen widget is
                     // something people look for on the home screen, not
-                    // buried in a settings list. Shown unconditionally here
-                    // (unlike the old Settings row, which hid itself when
-                    // pinning was unsupported) because a hole in a grid
+                    // buried in a settings list. Shown on every Android
+                    // device (unlike the old Settings row, which hid itself
+                    // when pinning was unsupported) because a hole in a grid
                     // reads worse than a tile that explains itself — the
                     // tap falls back to instructions when the launcher
-                    // can't pin.
-                    QuickAccessItem(
-                      icon: Icons.widgets_rounded,
-                      titleKey: 'home.widget',
-                      subtitleKey: 'home.widget_sub',
-                      gold: true,
-                      onTap: () => _addWidget(context),
-                    ),
+                    // can't pin. Not on iOS: the widget only exists on
+                    // Android, so there the tile could only point at a
+                    // widget that isn't there.
+                    if (AzkarWidgetChannel.isSupported)
+                      QuickAccessItem(
+                        icon: Icons.widgets_rounded,
+                        titleKey: 'home.widget',
+                        subtitleKey: 'home.widget_sub',
+                        gold: true,
+                        onTap: () => _addWidget(context),
+                      ),
                   ]),
                 ),
               ],

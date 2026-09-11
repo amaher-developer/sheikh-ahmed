@@ -1,0 +1,8 @@
+/* Name under the app icon. */
+"CFBundleDisplayName" = "الشيخ أحمد";
+
+/* Location permission prompt. */
+"NSLocationWhenInUseUsageDescription" = "يستخدم الموقع لحساب مواقيت الصلاة واتجاه القبلة بدقة لمكانك.";
+
+/* Microphone permission prompt. */
+"NSMicrophoneUsageDescription" = "يستخدم الميكروفون لتسجيل صوتك أثناء تدريب الحفظ، للاستماع لنفسك فقط.";

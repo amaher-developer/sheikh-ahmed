@@ -50,10 +50,39 @@ class QuranAudioHandler extends BaseAudioHandler with SeekHandler {
     // ships with the app because it has no CDN to stream from.
     if (item.id.startsWith('asset:///')) {
       await _player.setAsset(item.id.substring('asset:///'.length));
+    } else if (_isLocalFilePath(item.id)) {
+      // A downloaded surah's id is its bare path on disk. Android plays that
+      // through setUrl, but iOS only treats a file:// URI as a local file and
+      // reads anything else as a web address, so there every downloaded
+      // surah failed to play. setFilePath adds the scheme.
+      await _player.setFilePath(item.id);
     } else {
-      await _player.setUrl(item.id);
+      await _setUrlRetryingOnce(item);
     }
     await play();
+  }
+
+  /// Whether [id] is a path on disk rather than a URL — see [playMediaItem].
+  static bool _isLocalFilePath(String id) => id.startsWith('/');
+
+  /// Loads a stream, trying once more if the server refuses it.
+  ///
+  /// Stream hosts sometimes answer with a transient HTTP 500 — mp3quran's
+  /// backup.qurango.net did for two to five requests in every ten when
+  /// measured, with the next request playing fine — which reached the
+  /// listener as a playback error on a station that works. One retry absorbs
+  /// that. It is skipped once the listener has moved on to something else,
+  /// and an interrupted load (replaced by a newer one) throws a different
+  /// exception and is never retried.
+  Future<void> _setUrlRetryingOnce(MediaItem item) async {
+    try {
+      await _player.setUrl(item.id);
+    } on PlayerException {
+      if (mediaItem.value?.id != item.id) rethrow;
+      await Future<void>.delayed(const Duration(milliseconds: 700));
+      if (mediaItem.value?.id != item.id) rethrow;
+      await _player.setUrl(item.id);
+    }
   }
 
   @override
