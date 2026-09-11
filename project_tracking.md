@@ -104,7 +104,6 @@ _Last updated: 2026-09-11_
 
 - [ ] Time-Sensitive Notifications capability so the adhan can break through Focus (needs the capability on the App ID)
 - [ ] iOS home-screen widget (WidgetKit)
-- [ ] Set `AppLinks.appStore` (`lib/core/links/app_links.dart`) to `https://apps.apple.com/app/id<Apple ID>` once App Store Connect assigns the Apple ID — the share message then includes it on both platforms
 - [ ] Remove the unused `hive` / `hive_flutter` dependencies (nothing imports them)
 - [ ] Persist Quran favorites (currently reset on restart)
 - [ ] Remove remaining Arabic text/digits from the English UI (surah list subtitle, tracker weekdays, Qibla digits)
@@ -117,7 +116,7 @@ _Last updated: 2026-09-11_
 
 - [ ] Draft the post (features, both store links, screenshots)
 - Google Play: https://play.google.com/store/apps/details?id=com.manassa.sheikhahmed
-- App Store: _pending approval_
+- App Store: https://apps.apple.com/us/app/sheikh-ahmed/id6810906962 (Apple ID 6810906962; live only after approval)
 
 ## 8. Open questions
 

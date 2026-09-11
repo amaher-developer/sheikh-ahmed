@@ -22,12 +22,9 @@ class AppLinks {
   static const googlePlay =
       'https://play.google.com/store/apps/details?id=com.manassa.sheikhahmed';
 
-  /// The App Store listing — `https://apps.apple.com/app/id<Apple ID>`.
-  ///
-  /// Null until the app exists in App Store Connect, which assigns the
-  /// numeric Apple ID; the share message simply leaves the iPhone line out
-  /// while it is null rather than sending people to a dead link.
-  static const String? appStore = null;
+  /// The App Store listing (Apple ID 6810906962, assigned by App Store
+  /// Connect on 2026-09-11).
+  static const appStore = 'https://apps.apple.com/app/id6810906962';
 }
 
 /// Opens [uri] in the browser or mail app, and says so when nothing could —

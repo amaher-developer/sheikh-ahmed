@@ -11,15 +11,13 @@ import '../links/app_links.dart';
 /// Android lists both stores, since the person receiving the message may be
 /// on either. iOS lists only the App Store: App Review Guideline 2.3.10 asks
 /// iOS apps not to mention other mobile platforms, so the Google Play line
-/// stays out there. The App Store line is left out everywhere until that
-/// listing exists (see [AppLinks.appStore]).
+/// stays out there.
 Future<void> shareApp(BuildContext context) async {
   final box = context.findRenderObject() as RenderBox?;
-  final appStore = AppLinks.appStore;
   final isIos = defaultTargetPlatform == TargetPlatform.iOS;
   final links = <(String, String)>[
     if (!isIos) ('share.android'.tr(), AppLinks.googlePlay),
-    if (appStore != null) ('share.iphone'.tr(), appStore),
+    ('share.iphone'.tr(), AppLinks.appStore),
   ];
   final text = [
     'share.message'.tr(),
