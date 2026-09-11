@@ -6,4 +6,4 @@
 
 ## Current work
 
-First App Store release of version 1.14.0 (30); the Android app is already live on Google Play. Continue from `project_tracking.md` → "Handoff — continuing in a new chat". Store texts are in `app_store_listing.md`. Confirm with the owner before uploading a build or taking any other outward-facing action.
+First App Store release of version 1.14.0 (build 31); the Android app is already live on Google Play. Continue from `project_tracking.md` → "Handoff — continuing in a new chat". Store texts are in `app_store_listing.md`. Confirm with the owner before uploading a build or taking any other outward-facing action.

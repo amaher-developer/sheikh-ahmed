@@ -1,8 +1,12 @@
 /* Name under the app icon. */
 "CFBundleDisplayName" = "الشيخ أحمد";
 
-/* Location permission prompt. */
+/* Location permission prompt. The "always" keys are never shown — the app
+   only asks for "when in use" — but App Store Connect requires them because
+   geolocator references that API (ITMS-90683). */
 "NSLocationWhenInUseUsageDescription" = "يستخدم الموقع لحساب مواقيت الصلاة واتجاه القبلة بدقة لمكانك.";
+"NSLocationAlwaysAndWhenInUseUsageDescription" = "يستخدم الموقع لحساب مواقيت الصلاة واتجاه القبلة بدقة لمكانك.";
+"NSLocationAlwaysUsageDescription" = "يستخدم الموقع لحساب مواقيت الصلاة واتجاه القبلة بدقة لمكانك.";
 
 /* Microphone permission prompt. */
 "NSMicrophoneUsageDescription" = "يستخدم الميكروفون لتسجيل صوتك أثناء تدريب الحفظ، للاستماع لنفسك فقط.";

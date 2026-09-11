@@ -10,7 +10,7 @@ _Last updated: 2026-09-11_
 |---|---|
 | Framework | Flutter 3.47.2 / Dart 3.13.2 (Xcode 26.4, CocoaPods 1.16.2) |
 | Main packages | flutter_riverpod, easy_localization, just_audio + audio_service, flutter_local_notifications, adhan_dart, geolocator, flutter_qiblah, record, hive, shared_preferences, url_launcher |
-| Version | 1.14.0 (build 30) |
+| Version | 1.14.0 (build 31) — build 30 was the first upload attempt (ITMS-90683, see 3A) |
 | Android applicationId | `com.manassa.sheikhahmed` |
 | iOS bundle ID | `com.manassa.sheikhahmed` |
 | Apple Developer team | Ahmed Maher — `23U33PV5JV` (automatic signing) |
@@ -53,7 +53,8 @@ _Last updated: 2026-09-11_
 - [x] `flutter analyze` clean (no issues)
 - [x] Unsigned iOS release build compiles (`flutter build ios --release --no-codesign` → Runner.app, 28.3 MB) — before the second pass below; the owner runs the app after it
 - [x] Second pass (2026-09-11): notification permission asked on the first frame over the home screen instead of before `runApp` (the prompt used to sit over an empty screen); share message carries the Google Play link on Android and, on iOS, only the App Store link once known (Guideline 2.3.10, no other platforms named); widget snapshot skipped on iOS; `linux/`, `macos/`, `web/`, `windows/` template folders deleted
-- [ ] Signed App Store archive and upload (`flutter build ipa`) — once the App ID and App Store Connect record exist
+- [x] ITMS-90683 on the build-30 upload ("Missing purpose string … NSLocationAlwaysAndWhenInUseUsageDescription"): geolocator's binary references the always-authorization API, so App Store Connect demands a purpose string even though the app only asks for "when in use". Added `NSLocationAlwaysAndWhenInUseUsageDescription` and `NSLocationAlwaysUsageDescription` (same text as when-in-use) to `Info.plist` and both `InfoPlist.strings`; build number bumped to 31
+- [ ] Signed App Store archive and upload of build 31 (owner archives from Xcode)
 
 ### B. Apple Developer & App Store Connect (Ahmed)
 
@@ -196,7 +197,13 @@ Source files: `android/app/src/main/res/raw/<rawResource>.mp3`.
 
 ## 13. Change log
 
-### 2026-09-11 — second pass before upload (uncommitted)
+### 2026-09-11 — after the first upload attempt
+
+- ITMS-90683 fix: `ios/Runner/Info.plist`, `ios/Runner/en.lproj/InfoPlist.strings`, `ios/Runner/ar.lproj/InfoPlist.strings` (location "always" purpose strings); `pubspec.yaml` version 1.14.0+31.
+- `lib/core/links/app_links.dart`: `appStore` set to the live record `https://apps.apple.com/app/id6810906962`; `share_app.dart` lists it on both platforms.
+- Store texts: emoji removed from both descriptions in `app_store_listing.md` (App Store Connect rejects them); `app_store_description_ar.txt` is the plain-character Arabic copy that was accepted (no diacritics, ASCII digits and dashes).
+
+### 2026-09-11 — second pass before upload
 
 - Notification permission: `lib/main.dart` no longer requests it during plugin initialisation; new `lib/core/adhan/notification_permission.dart` asks on the first frame from `lib/core/adhan/adhan_watcher.dart`, which then schedules. The resume handler's 12-hour guard is stamped before the prompt so its inactive→resumed transition doesn't trigger a second reschedule.
 - Share message: `lib/core/share/share_app.dart`, `lib/core/links/app_links.dart` (`googlePlay`, `appStore` = null until the Apple ID exists), `share.android` / `share.iphone` strings in `assets/translations/ar.json`, `en.json`.
