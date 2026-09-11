@@ -4,6 +4,8 @@ import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 
+import '../storage/backup_exclusion.dart';
+
 class MushafFontException implements Exception {}
 
 /// Supplies the per-page font a printed Mus'haf page needs.
@@ -56,6 +58,7 @@ class MushafFontService {
       '${(await getApplicationDocumentsDirectory()).path}/mushaf_fonts',
     );
     if (!await dir.exists()) await dir.create(recursive: true);
+    await BackupExclusion.excludeDirectory(dir);
     return dir;
   }
 

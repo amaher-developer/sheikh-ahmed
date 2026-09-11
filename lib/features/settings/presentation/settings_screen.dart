@@ -9,6 +9,7 @@ import '../../../core/adhan/exact_alarm_providers.dart';
 import '../../../core/adhan/overlay_providers.dart';
 import '../../../core/app_restart.dart';
 import '../../../core/audio/audio_providers.dart';
+import '../../../core/links/app_links.dart';
 import '../../../core/prayer/location_service.dart';
 import '../../../core/prayer/prayer_city.dart';
 import '../../../core/prayer/prayer_providers.dart';
@@ -347,7 +348,10 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                   icon: Icons.dark_mode_rounded,
                   titleKey: 'settings_screen.dark_mode',
                   subtitleKey: '',
-                  subtitleOverride: isDark ? 'مفعّل' : 'مطفأ',
+                  subtitleOverride: (isDark
+                          ? 'settings_screen.dark_mode_on'
+                          : 'settings_screen.dark_mode_off')
+                      .tr(),
                   gold: false,
                   trailing: Switch(
                     value: isDark,
@@ -358,6 +362,34 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
                       if (context.mounted) AppRestart.restart(context);
                     },
                   ),
+                ),
+                const SizedBox(height: 10),
+                _SettingsRow(
+                  icon: Icons.privacy_tip_rounded,
+                  titleKey: 'settings_screen.privacy_policy',
+                  subtitleKey: 'settings_screen.privacy_policy_sub',
+                  gold: true,
+                  trailing: Icon(
+                    Icons.chevron_left_rounded,
+                    size: 18,
+                    color: AppColors.iconMuted,
+                  ),
+                  onTap: () =>
+                      openExternalLink(context, AppLinks.privacyPolicy),
+                ),
+                const SizedBox(height: 10),
+                _SettingsRow(
+                  icon: Icons.mail_rounded,
+                  titleKey: 'settings_screen.contact_us',
+                  subtitleKey: '',
+                  subtitleOverride: AppLinks.supportEmailAddress,
+                  gold: false,
+                  trailing: Icon(
+                    Icons.chevron_left_rounded,
+                    size: 18,
+                    color: AppColors.iconMuted,
+                  ),
+                  onTap: () => openExternalLink(context, AppLinks.supportEmail),
                 ),
               ],
             ),
@@ -876,7 +908,12 @@ class _CalculationMethodSheet extends ConsumerWidget {
           const SizedBox(height: 16),
           const Divider(height: 1),
           const SizedBox(height: 10),
-          ...CalculationMethod.values.map((method) {
+          // "Custom" is left out: its Fajr and Isha angles are zero and there
+          // is no screen here to set them, so choosing it put Fajr at about
+          // sunrise and Isha at about sunset.
+          ...CalculationMethod.values
+              .where((method) => method != CalculationMethod.other)
+              .map((method) {
             final selected = settings.method == method;
             return Padding(
               padding: const EdgeInsets.only(bottom: 8),

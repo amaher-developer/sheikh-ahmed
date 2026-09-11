@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart'
+    show TargetPlatform, defaultTargetPlatform;
 import 'package:flutter/services.dart' show PlatformException;
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/data/latest_all.dart' as tz_data;
@@ -33,6 +35,54 @@ const kWeeklyMissionChannelId = 'com.sheikhahmed.sheikh_ahmed_app.weekly_mission
 /// this channel from the system's notification settings without losing the
 /// morning/evening azkar reminders too.
 const kDhikrReminderChannelId = 'com.sheikhahmed.sheikh_ahmed_app.dhikr';
+
+/// iOS's cap on pending local notifications.
+const kIosPendingNotificationLimit = 64;
+
+/// How far ahead each kind of notification is scheduled.
+///
+/// iOS keeps only the 64 notifications that were scheduled *last* and
+/// silently drops the rest (flutter_local_notifications' README, "iOS
+/// pending notifications limit"). A week of everything is about 130 — five
+/// adhans, six daily reminders and seven dhikr a day, plus the weekly
+/// mission — and the adhans are scheduled first, so they were exactly the
+/// ones iOS threw away: with reminders on, no adhan notification arrived.
+///
+/// So iOS keeps the adhan's full week and gives the reminders what is left.
+/// Anyone who opens the app every day or two loses nothing, since each
+/// launch and resume rolls the window forward (see AdhanWatcher). Android
+/// has no such cap and keeps a week of everything.
+class NotificationWindow {
+  final int adhanDays;
+  final int dailyReminderDays;
+  final int dhikrDays;
+  final int weeklyMissionWeeks;
+
+  const NotificationWindow({
+    required this.adhanDays,
+    required this.dailyReminderDays,
+    required this.dhikrDays,
+    required this.weeklyMissionWeeks,
+  });
+
+  static const standard = NotificationWindow(
+    adhanDays: 7,
+    dailyReminderDays: 7,
+    dhikrDays: 7,
+    weeklyMissionWeeks: 4,
+  );
+
+  /// At most 35 adhans + 6 daily kinds x 2 + 7 dhikr x 2 + 2 weekly = 63.
+  static const ios = NotificationWindow(
+    adhanDays: 7,
+    dailyReminderDays: 2,
+    dhikrDays: 2,
+    weeklyMissionWeeks: 2,
+  );
+
+  static NotificationWindow get current =>
+      defaultTargetPlatform == TargetPlatform.iOS ? ios : standard;
+}
 
 /// Schedules a local notification at each of the five prayer times so the
 /// adhan reaches the user even when the app isn't open. The notification
@@ -87,10 +137,8 @@ class AdhanScheduler {
   /// sound already on the device (a raw resource, or a content:// URI); it
   /// cannot stream or reference a remote URL, which is why this can't just
   /// point at the same aladhan.com URLs used for in-app playback and
-  /// previews. iOS caps custom notification sounds at 30 seconds and
-  /// requires specific formats (not mp3), so no custom sound is set there;
-  /// iOS falls back to the system default notification sound for the
-  /// closed-app case.
+  /// previews. iOS can't use these files as they are, so it has its own
+  /// half-minute copies — see [AdhanVoice.iosNotificationSound].
   static RawResourceAndroidNotificationSound soundFor(AdhanVoice voice) =>
       RawResourceAndroidNotificationSound(voice.rawResource);
 
@@ -276,8 +324,13 @@ class AdhanScheduler {
               sound: soundFor(voice),
               audioAttributesUsage: AudioAttributesUsage.alarm,
             ),
-            iOS: const DarwinNotificationDetails(
+            iOS: DarwinNotificationDetails(
               interruptionLevel: InterruptionLevel.timeSensitive,
+              sound: voice.iosNotificationSound,
+              // Silent only while the app is in the foreground, where
+              // AdhanWatcher is already playing the full adhan and the clip
+              // would start a second copy over it.
+              presentSound: false,
             ),
           ),
           payload: 'adhan:$i',

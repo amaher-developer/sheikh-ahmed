@@ -1,7 +1,13 @@
 /// Live Quran radio stations. Every URL here was verified reachable
 /// (HTTP 200, audio/mpeg) against the source before shipping — see
 /// mp3quran.net's public `/api/v3/radios` listing, which is where the
-/// backup.qurango.net URLs come from.
+/// qurango.net stations come from.
+///
+/// That listing gives them on backup.qurango.net, but they are played from
+/// qurango.net itself: measured on 2026-09-11, the backup host refused 18 of
+/// 50 requests across these five stations with HTTP 500 — a playback error
+/// on a station that works — while qurango.net served all 50, over https and
+/// with no redirect.
 class QuranStation {
   final String nameKey;
   final String subtitleKey;
@@ -18,7 +24,7 @@ const kQuranStations = <QuranStation>[
   QuranStation(
     nameKey: 'radio_screen.stations.general',
     subtitleKey: 'radio_screen.stations.general_sub',
-    url: 'https://backup.qurango.net/radio/mix',
+    url: 'https://qurango.net/radio/mix',
   ),
   // Second in the list on purpose: this is the Egyptian national Quran
   // station (98.2 FM in Egypt), the one most users here actually want.
@@ -27,8 +33,9 @@ const kQuranStations = <QuranStation>[
   // listed five times under Egypt — "إذاعة القرآن الكريم من القاهرة" being
   // the top-voted — and one of those entries still carries a
   // listening-from-radio-garden parameter, which is what ties it to the
-  // Radio Garden listing. It resolves to cleartext, which is why
-  // network_security_config.xml carries a radiojar.com exception.
+  // Radio Garden listing. It resolves to cleartext, which is why Android's
+  // network_security_config.xml and the NSAppTransportSecurity entry in iOS's
+  // Info.plist both carry a radiojar.com exception.
   QuranStation(
     nameKey: 'radio_screen.stations.cairo',
     subtitleKey: 'radio_screen.stations.cairo_sub',
@@ -37,12 +44,12 @@ const kQuranStations = <QuranStation>[
   QuranStation(
     nameKey: 'radio_screen.stations.makkah_imam',
     subtitleKey: 'radio_screen.stations.makkah_sub',
-    url: 'https://backup.qurango.net/radio/saud_alshuraim',
+    url: 'https://qurango.net/radio/saud_alshuraim',
   ),
   QuranStation(
     nameKey: 'radio_screen.stations.madinah_imam',
     subtitleKey: 'radio_screen.stations.madinah_sub',
-    url: 'https://backup.qurango.net/radio/ali_alhuthaifi',
+    url: 'https://qurango.net/radio/ali_alhuthaifi',
   ),
   // The Egyptian recitation stations. Both come from mp3quran's own
   // catalogue and were checked end to end before being added: 200
@@ -51,12 +58,12 @@ const kQuranStations = <QuranStation>[
   QuranStation(
     nameKey: 'radio_screen.stations.hussary',
     subtitleKey: 'radio_screen.stations.egypt_sub',
-    url: 'https://backup.qurango.net/radio/mahmoud_khalil_alhussary',
+    url: 'https://qurango.net/radio/mahmoud_khalil_alhussary',
   ),
   QuranStation(
     nameKey: 'radio_screen.stations.minshawi',
     subtitleKey: 'radio_screen.stations.egypt_sub',
-    url: 'https://backup.qurango.net/radio/mohammed_siddiq_alminshawi',
+    url: 'https://qurango.net/radio/mohammed_siddiq_alminshawi',
   ),
   QuranStation(
     nameKey: 'radio_screen.stations.saudi_radio',

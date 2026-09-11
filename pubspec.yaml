@@ -16,7 +16,7 @@ publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 # https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 # In Windows, build-name is used as the major, minor, and patch parts
 # of the product and file versions while build-number is used as the build suffix.
-version: 1.14.0+30
+version: 1.14.0+31
 environment:
   sdk: ^3.11.4
 
@@ -74,19 +74,11 @@ dependencies:
   # Self-recording for the memorization practice mode
   record: ^6.1.1
   hijri: ^3.0.1
+  url_launcher: ^6.3.2
 
 dev_dependencies:
-  flutter_test:
-    sdk: flutter
-
   flutter_launcher_icons: ^0.14.3
   flutter_native_splash: ^2.4.6
-
-  # Declared so the printed-page storage test can point path_provider at a
-  # real temp directory. Both arrive transitively already; naming them here
-  # keeps the test compiling if that ever stops being true.
-  path_provider_platform_interface: ^2.1.2
-  plugin_platform_interface: ^2.1.8
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is
@@ -100,6 +92,8 @@ dev_dependencies:
 
 # The following section is specific to Flutter packages.
 flutter:
+  config:
+    enable-swift-package-manager: false
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in

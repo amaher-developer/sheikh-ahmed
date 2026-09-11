@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../storage/backup_exclusion.dart';
 import 'mushaf_page_data.dart';
 
 class MushafPageException implements Exception {}
@@ -42,6 +43,7 @@ class MushafPageService {
       '${(await getApplicationDocumentsDirectory()).path}/mushaf_pages_v4',
     );
     if (!await dir.exists()) await dir.create(recursive: true);
+    await BackupExclusion.excludeDirectory(dir);
     return dir;
   }
 
