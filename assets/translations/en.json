@@ -392,7 +392,9 @@
     "wird_complete_dismiss": "Alhamdulillah"
   },
   "share": {
-    "message": "Check out \"Sheikh Ahmed\" — prayer times, the Holy Quran, azkar, and Quran radio, all in one app."
+    "message": "Check out \"Sheikh Ahmed\" — prayer times, the Holy Quran, azkar, and Quran radio, all in one app.",
+    "android": "Android",
+    "iphone": "iPhone"
   },
   "zakat_screen": {
     "title": "Zakat calculator",
@@ -456,7 +458,13 @@
     "exact_alarms": "Alarms & reminders",
     "exact_alarms_sub": "Turn on so the adhan arrives exactly on time",
     "appear_on_top": "Appear on top",
-    "appear_on_top_sub": "Lets the adhan sound while the app is closed — the app never draws anything over your apps"
+    "appear_on_top_sub": "Lets the adhan sound while the app is closed — the app never draws anything over your apps",
+    "dark_mode_on": "On",
+    "dark_mode_off": "Off",
+    "privacy_policy": "Privacy policy",
+    "privacy_policy_sub": "How the app handles your data",
+    "contact_us": "Contact us",
+    "link_failed": "Couldn't open the link"
   },
   "calculation_methods": {
     "dubai": "Dubai",

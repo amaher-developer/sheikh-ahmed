@@ -29,6 +29,16 @@ class AdhanVoice {
     required this.url,
     required this.rawResource,
   });
+
+  /// The same recording's opening half-minute, bundled for iOS at
+  /// `ios/Runner/Sounds/[rawResource].caf` — what a scheduled adhan
+  /// notification plays there while the app is closed.
+  ///
+  /// iOS can't use the Android files as they are: it won't play mp3 as a
+  /// notification sound, and it silently swaps any sound of 30 seconds or
+  /// more for the default tone. So the clips are 29 seconds of IMA4 audio
+  /// that fade out rather than stopping mid-phrase.
+  String get iosNotificationSound => '$rawResource.caf';
 }
 
 const kAdhanVoices = <AdhanVoice>[

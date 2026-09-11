@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../audio/audio_providers.dart';
 import '../prayer/prayer_providers.dart';
 import 'adhan_alarm_channel.dart';
+import 'adhan_audio.dart';
 
 /// How long after a prayer the adhan could still be sounding.
 ///
@@ -30,10 +31,34 @@ final adhanPlayingProvider = StreamProvider<bool>((ref) async* {
     return;
   }
 
-  yield await AdhanAlarmChannel.isPlaying();
+  Future<bool> sounding() async =>
+      await AdhanAlarmChannel.isPlaying() || _inAppAdhanPlaying(ref);
+
+  yield await sounding();
   yield* Stream.periodic(const Duration(seconds: 2))
-      .asyncMap((_) => AdhanAlarmChannel.isPlaying());
+      .asyncMap((_) => sounding());
 });
+
+/// Whether the app's own player is sounding an adhan recording.
+///
+/// That player is the only one iOS has, and Android's fallback when exact
+/// alarms are refused. Asking only the native service meant the stop bar
+/// never appeared for it, so on iOS an adhan playing in the app could only be
+/// stopped from the lock screen.
+bool _inAppAdhanPlaying(Ref ref) {
+  try {
+    final handler = ref.read(audioHandlerProvider);
+    final playing = handler.playbackState.valueOrNull?.playing ?? false;
+    return playing && _isAdhanRecording(handler.mediaItem.valueOrNull?.id);
+  } catch (_) {
+    // No audio handler registered.
+    return false;
+  }
+}
+
+/// Whether [mediaId] is one of the adhan recordings.
+bool _isAdhanRecording(String? mediaId) =>
+    kAdhanVoices.any((voice) => voice.url == mediaId);
 
 /// Stops the adhan, whichever player is sounding it.
 ///

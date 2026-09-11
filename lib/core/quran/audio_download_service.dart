@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
+import '../storage/backup_exclusion.dart';
 import 'reciter_data.dart';
 
 /// Downloads and manages locally-stored surah audio, so a surah can be
@@ -55,6 +56,9 @@ class AudioDownloadService {
   }) async {
     final target = await _file(reciter, surahNumber);
     await target.parent.create(recursive: true);
+    // quran_audio itself, the parent of every reciter's folder, so one mark
+    // covers all of them.
+    await BackupExclusion.excludeDirectory(target.parent.parent);
     final partFile = File('${target.path}.part');
 
     // Resume from whatever an earlier attempt already fetched.

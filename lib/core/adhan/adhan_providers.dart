@@ -243,6 +243,9 @@ class AdhanRescheduler {
       final scheduler = _ref.read(adhanSchedulerProvider);
       final adhanSettings = _ref.read(adhanSettingsProvider);
       final notificationTypes = _ref.read(notificationTypeSettingsProvider);
+      // Shorter on iOS, which drops everything past 64 pending
+      // notifications — see NotificationWindow.
+      final window = NotificationWindow.current;
 
       // Every reminder kind below needs prayer times regardless of whether
       // the adhan itself is enabled — azkar/wird/etc. are independent
@@ -314,6 +317,7 @@ class AdhanRescheduler {
             bodyText: body,
             voice: voice,
             voiceName: voice.nameKey.tr(),
+            days: window.adhanDays,
           );
         } else {
           await scheduler.cancelAll();
@@ -333,6 +337,7 @@ class AdhanRescheduler {
           body: 'adhan.morning_azkar_body'.tr(),
           channelId: kAzkarReminderChannelId,
           channelName: 'adhan.azkar_channel_name'.tr(),
+          days: window.dailyReminderDays,
         ));
         await _guarded('evening azkar', () => scheduler.scheduleDaily(
           baseId: kEveningAzkarReminderBaseId,
@@ -344,6 +349,7 @@ class AdhanRescheduler {
           body: 'adhan.evening_azkar_body'.tr(),
           channelId: kAzkarReminderChannelId,
           channelName: 'adhan.azkar_channel_name'.tr(),
+          days: window.dailyReminderDays,
         ));
         await _guarded('wird', () => scheduler.scheduleDaily(
           baseId: kWirdReminderBaseId,
@@ -353,6 +359,7 @@ class AdhanRescheduler {
           body: 'adhan.wird_reminder_body'.tr(),
           channelId: kWirdReminderChannelId,
           channelName: 'adhan.wird_channel_name'.tr(),
+          days: window.dailyReminderDays,
         ));
 
         // A second, earlier nudge about the daily wird — the Isha reminder
@@ -366,6 +373,7 @@ class AdhanRescheduler {
           body: 'adhan.midday_tracker_body'.tr(),
           channelId: kWirdReminderChannelId,
           channelName: 'adhan.wird_channel_name'.tr(),
+          days: window.dailyReminderDays,
         ));
 
         await _guarded('surah of the day', () => scheduler.scheduleDailyVarying(
@@ -379,6 +387,7 @@ class AdhanRescheduler {
           ),
           channelId: kSurahOfDayChannelId,
           channelName: 'adhan.surah_of_day_channel_name'.tr(),
+          days: window.dailyReminderDays,
         ));
 
         // Daily ayah/hadith — the same content shown on the home screen's
@@ -396,6 +405,7 @@ class AdhanRescheduler {
           body: (date) => dailyQuote(date).text,
           channelId: kDailyMessageChannelId,
           channelName: 'adhan.daily_message_channel_name'.tr(),
+          days: window.dailyReminderDays,
         ));
 
         // This week's mission — announced once a week (see
@@ -414,6 +424,7 @@ class AdhanRescheduler {
               phraseFor: dhikrPhrase,
               channelId: kDhikrReminderChannelId,
               channelName: 'adhan.dhikr_channel_name'.tr(),
+              days: window.dhikrDays,
             ));
 
         // The same reminders again, as a card over other apps. Built from
@@ -455,6 +466,7 @@ class AdhanRescheduler {
           },
           channelId: kWeeklyMissionChannelId,
           channelName: 'adhan.weekly_mission_channel_name'.tr(),
+          weeks: window.weeklyMissionWeeks,
         ));
       } else {
         await scheduler.cancelDaily(baseId: kMorningAzkarReminderBaseId);
