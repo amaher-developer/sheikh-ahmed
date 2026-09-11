@@ -77,6 +77,10 @@ class WidgetDataService {
     String? languageCode,
     DateTime? now,
   }) async {
+    // The widget is Android-only; on iOS there is nothing to read the
+    // snapshot, so writing it — and the Hijri network call it involves — is
+    // wasted work on every launch, resume and settings change.
+    if (!AzkarWidgetChannel.isSupported) return;
     try {
       if (languageCode != null) {
         await _prefs.setString(kLanguage, languageCode);

@@ -389,7 +389,9 @@
     "wird_complete_dismiss": "Alhamdulillah"
   },
   "share": {
-    "message": "Check out \"Sheikh Ahmed\" — prayer times, the Holy Quran, azkar, and Quran radio, all in one app."
+    "message": "Check out \"Sheikh Ahmed\" — prayer times, the Holy Quran, azkar, and Quran radio, all in one app.",
+    "android": "Android",
+    "iphone": "iPhone"
   },
   "zakat_screen": {
     "title": "Zakat calculator",

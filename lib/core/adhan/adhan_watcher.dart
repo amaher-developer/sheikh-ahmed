@@ -7,6 +7,7 @@ import '../prayer/prayer_providers.dart';
 import '../prayer/prayer_times_service.dart';
 import 'adhan_alarm_channel.dart';
 import 'adhan_providers.dart';
+import 'notification_permission.dart';
 
 /// Plays the adhan the moment a prayer time arrives while the app is open.
 ///
@@ -77,7 +78,21 @@ class _AdhanWatcherState extends ConsumerState<AdhanWatcher>
     // it happens here on first build rather than in main().
     if (!_scheduledOnce) {
       _scheduledOnce = true;
-      WidgetsBinding.instance.addPostFrameCallback((_) => _reschedule());
+      // Stamped now, before the permission prompt: the prompt sends the app
+      // through inactive → resumed when it closes, and the resume handler
+      // above would otherwise see "never scheduled" and run a second full
+      // reschedule on top of the one below.
+      _lastScheduledAt = DateTime.now();
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        // Asked here, over the home screen, rather than in main() before
+        // anything was drawn. Awaited so the first schedule runs with the
+        // answer known — iOS won't deliver a request made before the grant.
+        await requestNotificationPermission(
+          ref.read(notificationsPluginProvider),
+        );
+        if (!mounted) return;
+        _reschedule();
+      });
     }
 
     // Prayer times move whenever location/method/madhab changes — without

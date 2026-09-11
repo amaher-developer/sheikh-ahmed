@@ -1,15 +1,37 @@
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/foundation.dart'
+    show TargetPlatform, defaultTargetPlatform;
 import 'package:flutter/material.dart';
 import 'package:share_plus/share_plus.dart';
 
-/// Shares a short description of the app. No store link is included yet —
-/// the app isn't published, and a fabricated Play Store/App Store URL
-/// would just be a broken link.
+import '../links/app_links.dart';
+
+/// Shares a short description of the app with the store link(s) underneath.
+///
+/// Android lists both stores, since the person receiving the message may be
+/// on either. iOS lists only the App Store: App Review Guideline 2.3.10 asks
+/// iOS apps not to mention other mobile platforms, so the Google Play line
+/// stays out there. The App Store line is left out everywhere until that
+/// listing exists (see [AppLinks.appStore]).
 Future<void> shareApp(BuildContext context) async {
   final box = context.findRenderObject() as RenderBox?;
+  final appStore = AppLinks.appStore;
+  final isIos = defaultTargetPlatform == TargetPlatform.iOS;
+  final links = <(String, String)>[
+    if (!isIos) ('share.android'.tr(), AppLinks.googlePlay),
+    if (appStore != null) ('share.iphone'.tr(), appStore),
+  ];
+  final text = [
+    'share.message'.tr(),
+    if (links.isNotEmpty) '',
+    // A single link needs no label; two are told apart by platform.
+    if (links.length == 1) links.single.$2,
+    if (links.length > 1)
+      for (final (label, url) in links) '$label: $url',
+  ].join('\n');
   await SharePlus.instance.share(
     ShareParams(
-      text: 'share.message'.tr(),
+      text: text,
       subject: 'app_name'.tr(),
       sharePositionOrigin: box != null
           ? box.localToGlobal(Offset.zero) & box.size

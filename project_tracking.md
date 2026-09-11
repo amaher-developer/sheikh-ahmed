@@ -23,10 +23,10 @@ _Last updated: 2026-09-11_
 | Track | Status |
 |---|---|
 | Android | ✅ Live on Google Play — https://play.google.com/store/apps/details?id=com.manassa.sheikhahmed |
-| iOS code readiness | ✅ Changes done; `flutter analyze` clean; unsigned release build compiles |
-| App Store Connect setup | ⬜ Not started (owner: Ahmed) |
+| iOS code readiness | ✅ Changes done; `flutter analyze` clean (second pass 2026-09-11: permission timing, share links, desktop/web folders removed — owner runs the app next) |
+| App Store Connect setup | 🟡 In progress (owner: Ahmed — App ID, app record, listing texts, screenshots) |
 | iOS review | ⬜ Not submitted |
-| Screenshots | 🟡 Simulators prepared (iPhone 6.9", iPad 13"); not captured yet |
+| Screenshots | ✅ Prepared by the owner |
 | Facebook launch post | ⬜ After iOS approval |
 
 ## 3. iOS release checklist
@@ -51,7 +51,8 @@ _Last updated: 2026-09-11_
 - [x] Dark mode on/off label translated (it was hard-coded Arabic)
 - [x] Project rules added to `.claude/CLAUDE.md`; `test/` folder removed at the owner's request
 - [x] `flutter analyze` clean (no issues)
-- [x] Unsigned iOS release build compiles (`flutter build ios --release --no-codesign` → Runner.app, 28.3 MB)
+- [x] Unsigned iOS release build compiles (`flutter build ios --release --no-codesign` → Runner.app, 28.3 MB) — before the second pass below; the owner runs the app after it
+- [x] Second pass (2026-09-11): notification permission asked on the first frame over the home screen instead of before `runApp` (the prompt used to sit over an empty screen); share message carries the Google Play link on Android and, on iOS, only the App Store link once known (Guideline 2.3.10, no other platforms named); widget snapshot skipped on iOS; `linux/`, `macos/`, `web/`, `windows/` template folders deleted
 - [ ] Signed App Store archive and upload (`flutter build ipa`) — once the App ID and App Store Connect record exist
 
 ### B. Apple Developer & App Store Connect (Ahmed)
@@ -87,6 +88,10 @@ _Last updated: 2026-09-11_
 | 2026-09-11 | Only code changes before launch; anything needing App Store Connect, Firebase or other services waits until after launch | Owner wants to ship now |
 | 2026-09-11 | No tests in the project; `test/` deleted; rule recorded in `.claude/CLAUDE.md` | Owner's rule |
 | 2026-09-11 | Radio streams served from `qurango.net` | Backup host failed 36% of requests |
+| 2026-09-11 | Notification permission requested on the first frame, not in `main()` | The system prompt appeared over an empty screen before the app had drawn anything |
+| 2026-09-11 | Share message: Google Play link on Android; on iOS only the App Store link, added once the Apple ID exists | App Review Guideline 2.3.10 — no other mobile platforms named in an iOS app |
+| 2026-09-11 | `linux/`, `macos/`, `web/`, `windows/` deleted | Mobile-only project; the folders were untouched Flutter templates |
+| 2026-09-11 | Claude reviews and fixes code only; the owner runs the app and prepares screenshots | Owner's instruction |
 
 ## 5. Known iOS limitations (not blockers)
 
@@ -99,7 +104,8 @@ _Last updated: 2026-09-11_
 
 - [ ] Time-Sensitive Notifications capability so the adhan can break through Focus (needs the capability on the App ID)
 - [ ] iOS home-screen widget (WidgetKit)
-- [ ] Add App Store and Google Play links to the share message
+- [ ] Set `AppLinks.appStore` (`lib/core/links/app_links.dart`) to `https://apps.apple.com/app/id<Apple ID>` once App Store Connect assigns the Apple ID — the share message then includes it on both platforms
+- [ ] Remove the unused `hive` / `hive_flutter` dependencies (nothing imports them)
 - [ ] Persist Quran favorites (currently reset on restart)
 - [ ] Remove remaining Arabic text/digits from the English UI (surah list subtitle, tracker weekdays, Qibla digits)
 - [ ] Ramadan missions 6–8 never appear; three duplicated hadith in the daily quotes
@@ -120,7 +126,7 @@ _Last updated: 2026-09-11_
 
 ## 9. Handoff — continuing in a new chat
 
-**Where things stand (2026-09-11):** all iOS code changes in section 3A are done and verified — `flutter analyze` clean, unsigned iOS release build and simulator build both succeed, and the built bundle was checked (bundle ID, version 1.14.0 (30), iOS 15.0, iPhone + iPad, the four 29-second `.caf` sounds, English and Arabic `InfoPlist.strings`). All of it is committed on the git branch `ios/app-store-release`. Waiting on the owner for the App Store Connect setup.
+**Where things stand (2026-09-11, second pass):** all iOS code changes in section 3A are done — `flutter analyze` clean. The first pass (committed on `ios/app-store-release`) was verified with an unsigned release build and the built bundle was checked (bundle ID, version 1.14.0 (30), iOS 15.0, iPhone + iPad, the four 29-second `.caf` sounds, English and Arabic `InfoPlist.strings`). The second pass (permission timing, share links, widget snapshot skipped on iOS, desktop/web folders deleted — see the change log) is **not committed yet**; the owner runs the app themselves next, then the App Store Connect fields are filled in together. Working rules from the owner: Claude reads and fixes code only — no running the app, no simulators, no screenshots, no builds unless asked; the owner has the screenshots ready.
 
 **Next steps, in order**
 
@@ -129,12 +135,8 @@ _Last updated: 2026-09-11_
 3. **Claude — upload, only after the owner confirms:**
    `xcodebuild -exportArchive -archivePath build/ios/archive/Runner.xcarchive -exportOptionsPlist ios/ExportOptions.plist -exportPath build/ios/upload -allowProvisioningUpdates`
    (`ios/ExportOptions.plist` uploads straight to App Store Connect with the account signed in to Xcode.) Alternative: Xcode → Window → Organizer → Distribute App → App Store Connect.
-4. **Screenshots** — the owner navigates and presses ⌘S in Simulator; no test automation (project rule). Required sizes: iPhone 6.9" 1320 × 2868 and iPad 13" 2064 × 2752.
-   - Devices: iPhone 17 Pro Max `C53CAAB8-2407-44E0-A39F-39C1D7A1C696`, iPad Pro 13-inch (M5) `B82C3C0C-A0DE-4DF5-85E2-38CA000FF68F`.
-   - Setup: `flutter build ios --simulator --debug`, then for each device id:
-     `xcrun simctl boot <id>` · `xcrun simctl status_bar <id> override --time 9:41 --batteryState charged --batteryLevel 100 --wifiBars 3 --cellularBars 4` · `xcrun simctl install <id> build/ios/iphonesimulator/Runner.app` · `xcrun simctl privacy <id> grant location com.manassa.sheikhahmed` (and `microphone`) · `open -a Simulator`.
-   - On 2026-09-11 both simulators were left booted with the app installed.
-5. Fill the version page from `app_store_listing.md`, run the TestFlight QA list (section 3C), then submit for review.
+4. **Screenshots** — already prepared by the owner (iPhone 6.9" 1320 × 2868 and iPad 13" 2064 × 2752). Claude does not run simulators or capture screenshots.
+5. Fill the version page from `app_store_listing.md` together with the owner, run the TestFlight QA list (section 3C), then submit for review.
 6. **After approval:** add the App Store link to this file, then write the Facebook launch post in Arabic about the project and its features (use section 10).
 
 **Constraints**
@@ -181,7 +183,7 @@ _Last updated: 2026-09-11_
 - The header's Hijri date (aladhan API) and Ramadan detection (on-device Umm al-Qura table) can disagree by a day.
 - Tapping a notification only opens the app; the Home bell icon just opens the More tab.
 - The azkar notifications switch description doesn't mention the dhikr and surah-of-the-day reminders it also controls.
-- Notification permission is requested at launch before any screen; location defaults to Cairo with no first-run prompt.
+- Location defaults to Cairo with no first-run prompt (the notification permission now comes after the first frame — fixed 2026-09-11).
 - Unused code and strings: the text page mode, a second whole-Mus'haf downloader, the Hijri offset, the Sha'ban countdown, about 24 unused strings.
 
 ## 12. How the iOS adhan clips were made
@@ -194,6 +196,13 @@ Source files: `android/app/src/main/res/raw/<rawResource>.mp3`.
 4. Add the file to the Runner target's Copy Bundle Resources (the `Sounds` group in `project.pbxproj`). The file name must match `AdhanVoice.iosNotificationSound` (`rawResource` + `.caf`).
 
 ## 13. Change log
+
+### 2026-09-11 — second pass before upload (uncommitted)
+
+- Notification permission: `lib/main.dart` no longer requests it during plugin initialisation; new `lib/core/adhan/notification_permission.dart` asks on the first frame from `lib/core/adhan/adhan_watcher.dart`, which then schedules. The resume handler's 12-hour guard is stamped before the prompt so its inactive→resumed transition doesn't trigger a second reschedule.
+- Share message: `lib/core/share/share_app.dart`, `lib/core/links/app_links.dart` (`googlePlay`, `appStore` = null until the Apple ID exists), `share.android` / `share.iphone` strings in `assets/translations/ar.json`, `en.json`.
+- `lib/core/widget/widget_data_service.dart`: `publish()` returns early where the Android widget channel is unsupported (iOS).
+- Deleted `linux/`, `macos/`, `web/`, `windows/` (72 untouched template files); `flutter pub get` and `flutter analyze` clean afterwards.
 
 ### 2026-09-11 — iOS readiness
 

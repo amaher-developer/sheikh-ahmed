@@ -47,17 +47,22 @@ Future<void> main() async {
 
   // Local notifications deliver the adhan/azkar/wird reminders when the
   // app isn't open; the in-app AdhanWatcher covers the adhan foreground
-  // case. `initialize()` alone does *not* ask for permission on Android
-  // 13+ — without the explicit requestNotificationsPermission() call
-  // below, every notification here is silently dropped by the OS, with no
-  // error anywhere in the app to reveal why.
+  // case.
+  //
+  // Permission is deliberately *not* requested here. With the request flags
+  // on, the plugin asked during initialize() — before runApp — so the system
+  // prompt sat over an empty screen and the app stayed blank until it was
+  // answered. The request now happens on the first frame, over the home
+  // screen; see requestNotificationPermission (notification_permission.dart)
+  // and AdhanWatcher, which asks before it schedules anything.
   final notifications = FlutterLocalNotificationsPlugin();
   await notifications.initialize(
     const InitializationSettings(
       android: AndroidInitializationSettings('@mipmap/ic_launcher'),
       iOS: DarwinInitializationSettings(
-        requestAlertPermission: true,
-        requestSoundPermission: true,
+        requestAlertPermission: false,
+        requestBadgePermission: false,
+        requestSoundPermission: false,
       ),
     ),
   );
@@ -65,11 +70,10 @@ Future<void> main() async {
       .resolvePlatformSpecificImplementation<
         AndroidFlutterLocalNotificationsPlugin
       >();
-  await android?.requestNotificationsPermission();
-  // Exact alarms are a separate matter from the notification permission
-  // above, and just as consequential: without them every reminder is
-  // scheduled inexactly and Android may hold it until the device next leaves
-  // Doze, which is why reminders could once go a whole day without arriving.
+  // Exact alarms are a separate matter from the notification permission,
+  // and just as consequential: without them every reminder is scheduled
+  // inexactly and Android may hold it until the device next leaves Doze,
+  // which is why reminders could once go a whole day without arriving.
   //
   // Only *detected* here, never requested. Asking opens a full system
   // settings screen, and doing that during startup — before the user has even
@@ -80,11 +84,6 @@ Future<void> main() async {
     final canScheduleExact = await android.canScheduleExactNotifications();
     if (canScheduleExact == false) AdhanScheduler.useInexactAlarms();
   }
-  await notifications
-      .resolvePlatformSpecificImplementation<
-        IOSFlutterLocalNotificationsPlugin
-      >()
-      ?.requestPermissions(alert: true, badge: true, sound: true);
   // The adhan channel is created in AdhanRescheduler.run() rather than
   // here: it needs the selected voice and that voice's translated name,
   // and neither the provider graph nor easy_localization's strings exist
