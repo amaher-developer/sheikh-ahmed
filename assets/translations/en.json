@@ -238,6 +238,7 @@
     "mushaf_load_error": "Could not load this Mus'haf page. Check your connection and try again.",
     "meccan": "Meccan",
     "medinan": "Medinan",
+    "ayah_count": "{count} verses",
     "juz_n": "Juz {n}",
     "search_surahs": "Surahs",
     "search_ayahs": "Verses",

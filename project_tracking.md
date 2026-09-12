@@ -1,6 +1,6 @@
 # Sheikh Ahmed (الشيخ أحمد) — Project Tracking
 
-_Last updated: 2026-09-11_
+_Last updated: 2026-09-12_
 
 ## 1. Overview
 
@@ -10,7 +10,7 @@ _Last updated: 2026-09-11_
 |---|---|
 | Framework | Flutter 3.47.2 / Dart 3.13.2 (Xcode 26.4, CocoaPods 1.16.2) |
 | Main packages | flutter_riverpod, easy_localization, just_audio + audio_service, flutter_local_notifications, adhan_dart, geolocator, flutter_qiblah, record, hive, shared_preferences, url_launcher |
-| Version | 1.14.0 (build 31) — build 30 was the first upload attempt (ITMS-90683, see 3A) |
+| Version | `pubspec.yaml`: 1.16.1 (build 36). 1.16.1+35 came from the Android commit `eb8434d` merged into `main` on 2026-09-11; bumped to +36 on 2026-09-12 for the iOS resubmission so it is above both iOS build 31 and Android build 35. The iOS build Apple reviewed was 1.14.0 (31); build 30 was the first upload attempt (ITMS-90683, see 3A). The App Store Connect version page must be renamed from 1.14.0 to 1.16.1 by the owner before selecting build 36 |
 | Android applicationId | `com.manassa.sheikhahmed` |
 | iOS bundle ID | `com.manassa.sheikhahmed` |
 | Apple Developer team | Ahmed Maher — `23U33PV5JV` (automatic signing) |
@@ -23,10 +23,10 @@ _Last updated: 2026-09-11_
 | Track | Status |
 |---|---|
 | Android | ✅ Live on Google Play — https://play.google.com/store/apps/details?id=com.manassa.sheikhahmed |
-| iOS code readiness | ✅ Changes done; `flutter analyze` clean (second pass 2026-09-11: permission timing, share links, desktop/web folders removed — owner runs the app next) |
-| App Store Connect setup | 🟡 In progress (owner: Ahmed — App ID, app record, listing texts, screenshots) |
-| iOS review | ⬜ Not submitted |
-| Screenshots | ✅ Prepared by the owner |
+| iOS code readiness | ✅ Merged into `main` (PR #2); `flutter analyze` clean on the merged tree (2026-09-12) |
+| App Store Connect setup | ✅ Done by the owner (app record, version 1.14.0 page, build 31 submitted) |
+| iOS review | ❌ First submission (build 31) came back as Guideline 2.1 "Information Needed" — six questions, no policy or crash finding (section 3D). Resubmission in progress: build 36, the reply text and a screen recording |
+| Screenshots | 🟡 The ones on App Store Connect are the owner's captures. The designer's marketing set needs a redo before it can be used (section 3D) |
 | Facebook launch post | ⬜ After iOS approval |
 
 ## 3. iOS release checklist
@@ -54,19 +54,21 @@ _Last updated: 2026-09-11_
 - [x] Unsigned iOS release build compiles (`flutter build ios --release --no-codesign` → Runner.app, 28.3 MB) — before the second pass below; the owner runs the app after it
 - [x] Second pass (2026-09-11): notification permission asked on the first frame over the home screen instead of before `runApp` (the prompt used to sit over an empty screen); share message carries the Google Play link on Android and, on iOS, only the App Store link once known (Guideline 2.3.10, no other platforms named); widget snapshot skipped on iOS; `linux/`, `macos/`, `web/`, `windows/` template folders deleted
 - [x] ITMS-90683 on the build-30 upload ("Missing purpose string … NSLocationAlwaysAndWhenInUseUsageDescription"): geolocator's binary references the always-authorization API, so App Store Connect demands a purpose string even though the app only asks for "when in use". Added `NSLocationAlwaysAndWhenInUseUsageDescription` and `NSLocationAlwaysUsageDescription` (same text as when-in-use) to `Info.plist` and both `InfoPlist.strings`; build number bumped to 31
-- [ ] Signed App Store archive and upload of build 31 (owner archives from Xcode)
+- [x] Signed App Store archive and upload of build 31 (the owner archived from Xcode and submitted; Apple rejected it — see section 9)
 
 ### B. Apple Developer & App Store Connect (Ahmed)
 
-- [ ] Register explicit App ID `com.manassa.sheikhahmed` under team Ahmed Maher (no extra capabilities)
-- [ ] Create the app: iOS, primary language Arabic, bundle ID above, SKU e.g. `sheikhahmed-ios`
-- [ ] App Information: name, subtitle, category (Primary: Lifestyle, Secondary: Reference), content rights, age rating
-- [ ] Pricing and Availability: Free
-- [ ] App Privacy: "Data Not Collected" + privacy policy URL
-- [ ] Support URL (required — see open questions)
-- [ ] Version 1.14.0 page: screenshots (iPhone 6.9" and iPad 13"), description, keywords, promotional text — texts in `app_store_listing.md`
-- [ ] App Review Information: contact details + review notes from `app_store_listing.md`
-- [ ] Upload build → select it on the version page → Submit for Review
+All done by the owner before the first submission (build 31). Kept for reference; the rejection follow-up is tracked in section 9.
+
+- [x] Register explicit App ID `com.manassa.sheikhahmed` under team Ahmed Maher (no extra capabilities)
+- [x] Create the app: iOS, primary language Arabic, bundle ID above, SKU e.g. `sheikhahmed-ios`
+- [x] App Information: name, subtitle, category (Primary: Lifestyle, Secondary: Reference), content rights, age rating
+- [x] Pricing and Availability: Free
+- [x] App Privacy: "Data Not Collected" + privacy policy URL
+- [x] Support URL
+- [x] Version 1.14.0 page: screenshots (iPhone 6.9" and iPad 13"), description, keywords, promotional text — texts in `app_store_listing.md`
+- [x] App Review Information: contact details + review notes from `app_store_listing.md`
+- [x] Upload build → select it on the version page → Submit for Review (build 31 — rejected)
 
 ### C. Device QA before submitting (TestFlight build)
 
@@ -78,6 +80,25 @@ _Last updated: 2026-09-11_
 - [ ] Memorization mode: record and play back
 - [ ] More tab: privacy policy and contact links open
 - [ ] iPad: portrait and landscape pass over every tab
+
+### D. App Review round 1 — Guideline 2.1 "Information Needed" (2026-09-12)
+
+Apple did not reject the app for a policy or a crash; the reviewer asked for more information before continuing. The "Prevent Common Issues" block under the message is boilerplate sent with every such request. The reply goes into the App Review message thread on the version page **and** into App Review Information → Notes.
+
+| # | Apple asks for | Answer / who |
+|---|---|---|
+| 1 | Screen recording on a physical device running the latest iOS, from launch through the typical flow | **Owner** records on the iPhone with TestFlight build 36: notification prompt, Home, Quran (open a surah, tap an ayah, play), Radio, Azkar, Tracker, More (privacy policy, contact). No accounts and no user-generated content, so nothing to show for registration, deletion or reporting. Attach to the reply, or link it (Drive / unlisted YouTube) if too large |
+| 2 | Purpose and target audience | **Claude drafts:** daily worship companion for Muslims, Arabic-first with English; prayer times, adhan, Mus'haf, radio, azkar, tracker in one free app with no accounts or ads |
+| 3 | Setup and access instructions | **Claude drafts** from the review notes in `app_store_listing.md`: no login; language switch in More; location optional |
+| 4 | External services | **Claude drafts** from section 10: alquran.cloud, quran.com, qurancdn.com, mp3quran.net, everyayah.com, qurango.net, radiojar.com, aladhan.com; no auth, payments, analytics, ads or AI; prayer times computed on the device |
+| 5 | Regional differences | None: same features everywhere; prayer times follow the user's location |
+| 6 | Regulated industry / protected material | Not regulated. Quran text (public domain), Tafsir Al-Muyassar, Saheeh International via alquran.cloud, recitations and radio from free public sources, OFL fonts, a 1930s Sheikh Mohamed Rifaat adhan recording. **Owner confirms the sources before the reply is sent** |
+
+Also found while preparing the reply:
+
+- **Designer screenshots** (`/Volumes/SamsungT7/screens/iphone 1290 x 2796px`, 5 PNG): App Store Connect refused them ("Images can't contain alpha channels or transparencies"). About 13% of every image is fully transparent — empty bands of ~160 px at the top and 200–270 px at the bottom, black underneath — so stripping the alpha alone would leave black bars. Bigger problems: every image carries a "Get the app / Download now" footer with Google Play and Apple logos (Guideline 2.3.10); the phone screens are AI-generated rather than real captures (typos «المشاء», «انراديو», «مائنة النَّعايش», "REILECTING"; a radio list that does not exist; the Mus'haf page has wrong ayah markers); callouts name features the app lacks. Brief for the designer given to the owner: fill the 1290 × 2796 canvas, export JPG or PNG without alpha, drop the store footer, real app screenshots inside the frame, real feature captions; same for iPad 2064 × 2752. 1290 × 2796 is accepted in the 6.9" slot.
+- **Privacy policy URL** (claude.ai artifact): `curl` returns 200 with an empty app shell, so whether it opens without a claude.ai login is unverified. The owner tests it in a private window; if it needs a login, host it publicly (GitHub Pages from `docs/` is the cheapest) before resubmitting and update `AppLinks.privacyPolicy`.
+- **Listing text**: `app.txt` in the screens folder is the old Google Play copy (6 reciters, home-screen widget). Whatever is on App Store Connect must match `app_store_listing.md` (21 reciters, no widget).
 
 ## 4. Decisions log
 
@@ -93,6 +114,8 @@ _Last updated: 2026-09-11_
 | 2026-09-11 | Share message: Google Play link on Android; on iOS only the App Store link, added once the Apple ID exists | App Review Guideline 2.3.10 — no other mobile platforms named in an iOS app |
 | 2026-09-11 | `linux/`, `macos/`, `web/`, `windows/` deleted | Mobile-only project; the folders were untouched Flutter templates |
 | 2026-09-11 | Claude reviews and fixes code only; the owner runs the app and prepares screenshots | Owner's instruction |
+| 2026-09-12 | Work continues on `main`; `ios/app-store-release` was merged through PR #2 and is no longer used | The owner merged it and asked to continue from `main` |
+| 2026-09-12 | `test/` deleted again (two source-reading tests re-added by the parallel Android commit `eb8434d`) | Project rule: no tests. They also broke `flutter analyze` because `flutter_test` is no longer a dev dependency |
 
 ## 5. Known iOS limitations (not blockers)
 
@@ -106,7 +129,7 @@ _Last updated: 2026-09-11_
 - [ ] Time-Sensitive Notifications capability so the adhan can break through Focus (needs the capability on the App ID)
 - [ ] iOS home-screen widget (WidgetKit)
 - [ ] Remove the unused `hive` / `hive_flutter` dependencies (nothing imports them)
-- [ ] Persist Quran favorites (currently reset on restart)
+- [x] Persist Quran favorites — done 2026-09-12
 - [ ] Remove remaining Arabic text/digits from the English UI (surah list subtitle, tracker weekdays, Qibla digits)
 - [ ] Ramadan missions 6–8 never appear; three duplicated hadith in the daily quotes
 - [ ] Update `play_store_listing.md` (it still says 6 reciters and 4 azkar categories)
@@ -121,23 +144,22 @@ _Last updated: 2026-09-11_
 
 ## 8. Open questions
 
-- **Support URL**: App Store Connect requires one. Options: the privacy policy page (if it shows the contact email), or a Facebook page for the app.
-- **App name availability**: "الشيخ أحمد" / "Sheikh Ahmed" must be unused on the App Store.
+- ~~Version for the resubmission~~ — decided 2026-09-12: stay on 1.16.1, build 36 (above iOS 31 and Android 35). The owner renames the App Store Connect version page from 1.14.0 to 1.16.1 and selects build 36.
+- **Privacy policy URL** — does it open without a claude.ai login? Unverified (section 3D).
+- **Screenshots** — waiting for the designer's corrected set (section 3D).
+- ~~Support URL~~ and ~~app name availability~~ — resolved by the owner during the App Store Connect setup (values not recorded here).
 
 ## 9. Handoff — continuing in a new chat
 
-**Where things stand (2026-09-11, second pass):** all iOS code changes in section 3A are done — `flutter analyze` clean. The first pass (committed on `ios/app-store-release`) was verified with an unsigned release build and the built bundle was checked (bundle ID, version 1.14.0 (30), iOS 15.0, iPhone + iPad, the four 29-second `.caf` sounds, English and Arabic `InfoPlist.strings`). The second pass (permission timing, share links, widget snapshot skipped on iOS, desktop/web folders deleted — see the change log) is **not committed yet**; the owner runs the app themselves next, then the App Store Connect fields are filled in together. Working rules from the owner: Claude reads and fixes code only — no running the app, no simulators, no screenshots, no builds unless asked; the owner has the screenshots ready.
+**Where things stand (2026-09-12, evening):** the first App Store submission (1.14.0, build 31) came back as **Guideline 2.1 "Information Needed"** — six questions, no policy or crash finding; details and the answer plan are in section 3D. `main` is up to date: `ios/app-store-release` merged through PR #2, plus the parallel Android-only commit `eb8434d` (adhan alert screen and dhikr card over other apps, alarm restore after reboot, "Appear on top" banner on Home). Verified on the merged tree: no conflict markers, every iOS-side change intact, Dart ↔ Kotlin channel method names match, the new Home banner cannot show on iOS. Code pass for the resubmission done, `flutter analyze` clean: `test/` removed again, version 1.16.1+36, Quran favourites now persist, the surah list, juz cards and Qibla bearing no longer show Arabic words or digits in the English UI. **Uncommitted at the time of writing** — the owner is taking the build from here and commits when ready. Working rules from the owner: analyze and propose, then wait; the owner performs App Store Connect, designer and device steps themselves; no running the app, no simulators, no screenshots, no builds and no commits unless asked.
 
 **Next steps, in order**
 
-1. **Owner:** register the App ID `com.manassa.sheikhahmed` (team Ahmed Maher) and create the App Store Connect app (iOS, primary language Arabic). Decide the Support URL (a Facebook page for the app, or the privacy-policy link).
-2. **Claude — signed build:** `flutter build ipa --release`. Signing is automatic with team `23U33PV5JV`, and Flutter passes `-allowProvisioningUpdates`, so Xcode creates the distribution profile itself (none existed locally on 2026-09-11).
-3. **Claude — upload, only after the owner confirms:**
-   `xcodebuild -exportArchive -archivePath build/ios/archive/Runner.xcarchive -exportOptionsPlist ios/ExportOptions.plist -exportPath build/ios/upload -allowProvisioningUpdates`
-   (`ios/ExportOptions.plist` uploads straight to App Store Connect with the account signed in to Xcode.) Alternative: Xcode → Window → Organizer → Distribute App → App Store Connect.
-4. **Screenshots** — already prepared by the owner (iPhone 6.9" 1320 × 2868 and iPad 13" 2064 × 2752). Claude does not run simulators or capture screenshots.
-5. Fill the version page from `app_store_listing.md` together with the owner, run the TestFlight QA list (section 3C), then submit for review.
-6. **After approval:** add the App Store link to this file, then write the Facebook launch post in Arabic about the project and its features (use section 10).
+1. **Owner:** `flutter build ipa --release`, upload from Xcode Organizer (Distribute App → App Store Connect), wait for processing, install build 36 through TestFlight, record the screen recording (3D item 1). Rename the App Store Connect version page from 1.14.0 to 1.16.1 and select build 36.
+2. **Owner:** answer the four open facts — which text is on App Store Connect, does the privacy link open in a private window, the Support URL, and the content sources (3D item 6).
+3. **Claude:** draft the English reply covering 3D items 2–6 for the owner to review, paste into the App Review thread and into App Review Information → Notes, then Submit for Review again (required because the build changed).
+4. **Screenshots:** designer redo per the brief in 3D; the owner uploads them any time before approval. Not blocking.
+5. **After approval:** add the App Store link to this file, then write the Facebook launch post in Arabic about the project and its features (use section 10).
 
 **Constraints**
 
@@ -171,13 +193,13 @@ _Last updated: 2026-09-11_
 - **Qibla:** live compass (flutter_qiblah), "facing the Qibla" within ±3° with a haptic, a bearing number and a calibration hint.
 - **Notifications:** adhan at the 5 prayers; morning azkar (Fajr + 15 min), midday check-in (Dhuhr + 15), evening azkar (Asr + 15), daily wird (Isha + 20), ayah/hadith 08:00, surah of the day 09:00, dhikr at 9, 11, 13, 15, 17, 19 and 21, weekly mission on Saturday 09:00. Two switches only: adhan, and everything else.
 - **More tab:** app language, zakat, Qibla, share app (text only), location, calculation method, adhan switch, adhan voice, azkar notifications switch, dark mode, privacy policy, contact us. Android also shows exact-alarm and "appear on top" rows when those permissions are missing.
-- **Android-only:** home-screen azkar widget (next prayer, the 5 times, Hijri date, weekly mission, rotating dhikr); full-length adhan alarm service; exact-alarm and overlay permission prompts; per-kind notification channels.
+- **Android-only:** home-screen azkar widget (next prayer, the 5 times, Hijri date, weekly mission, rotating dhikr); full-length adhan alarm service; a native full-screen adhan alert over other apps and a floating dhikr card at the dhikr reminder times (both need "Appear on top"; added 2026-09-11 in `eb8434d`); alarms restored after reboot, app update and clock changes (`AdhanBootReceiver`); exact-alarm and "Appear on top" prompts in Settings and as Home banners; per-kind notification channels.
 - **External services:** api.alquran.cloud (text, translation, tafsir), api.quran.com (search, tajweed, words, page layout), quran.com fonts, audio.qurancdn.com (word audio), mp3quran.net (surah audio), everyayah.com (ayah audio), qurango.net and radiojar.com (radio), cdn.aladhan.com (adhan audio), api.aladhan.com (Hijri date). No analytics, ads, accounts or crash reporting.
 
 ## 11. Other issues found (not fixed yet)
 
-- Quran favorites reset when the app restarts.
-- The English UI still shows some Arabic: the surah list subtitle («مكية/مدنية · N آية»), tracker weekday letters, Arabic-Indic digits in the Quran lists, azkar, tracker and Qibla, and the daily quote / surah-of-the-day texts.
+- ~~Quran favorites reset when the app restarts~~ — fixed 2026-09-12 (`lib/core/quran/favorite_surahs.dart`).
+- The English UI still shows some Arabic: tracker weekday letters, Arabic-Indic digits in azkar and the tracker, and the daily quote / surah-of-the-day texts. (The surah list subtitle and digits, the juz cards and the Qibla bearing were fixed 2026-09-12.)
 - Ramadan missions 6–8 never appear, and "Qiyam in the last ten" only shows on days 29–30.
 - Three hadith are duplicated in the daily quotes.
 - The header's Hijri date (aladhan API) and Ramadan detection (on-device Umm al-Qura table) can disagree by a day.
@@ -196,6 +218,12 @@ Source files: `android/app/src/main/res/raw/<rawResource>.mp3`.
 4. Add the file to the Runner target's Copy Bundle Resources (the `Sounds` group in `project.pbxproj`). The file name must match `AdhanVoice.iosNotificationSound` (`rawResource` + `.caf`).
 
 ## 13. Change log
+
+### 2026-09-12 — after the App Store rejection
+
+- `main` fast-forwarded to `d5b7550` (PR #2 merge of `ios/app-store-release` + the parallel Android commit `eb8434d`). Android-only additions from that commit: `AdhanAlertActivity.kt`, `ZikrAlertActivity.kt`, `ZikrAlarmReceiver.kt`, `AdhanBootReceiver.kt`, `AdhanSchedule.kt`, `MainActivity.kt` (`scheduleZikrAlarms` / `cancelZikrAlarms`), manifest entries, two layouts, four drawables, two fonts, native strings. Dart: `lib/core/adhan/adhan_alarm_channel.dart` (`scheduleZikr`, `cancelZikr`), `adhan_scheduler.dart` (`dhikrReminderInstants`, `kZikrAlarmSlots`), `adhan_providers.dart` (dhikr cards scheduled and cancelled next to the dhikr notifications), `lib/features/home/presentation/home_screen.dart` (`_AppearOnTopBanner`), `home.appear_on_top_*` strings in `ar.json` / `en.json`; `pubspec.yaml` version 1.16.1+35.
+- `test/core/adhan/` (two files re-added by that commit) deleted again; `flutter analyze` clean afterwards.
+- Resubmission pass: `pubspec.yaml` 1.16.1+36. New `lib/core/quran/favorite_surahs.dart`; `lib/features/quran/presentation/quran_screen.dart` restores favourites in `initState` and persists them on toggle, and its surah rows and juz cards use `quran_screen.meccan` / `medinan` / new `ayah_count` strings with locale-aware digits; `lib/features/qibla/presentation/qibla_screen.dart` shows the fixed bearing in Western digits in the English UI; `ayah_count` added to `ar.json` / `en.json`. `flutter analyze` clean.
 
 ### 2026-09-11 — after the first upload attempt
 

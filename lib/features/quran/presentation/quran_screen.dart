@@ -11,7 +11,9 @@ import '../../../core/quran/quran_providers.dart';
 import '../../../core/quran/mushaf_page_service.dart';
 import '../../../core/quran/quran_search_service.dart';
 import '../../../core/quran/reciter_data.dart';
+import '../../../core/quran/favorite_surahs.dart';
 import '../../../core/quran/surah_meta.dart';
+import '../../../core/prayer/prayer_providers.dart';
 import '../../../core/theme/app_colors.dart';
 import '../../../core/theme/app_text_styles.dart';
 import '../../../core/utils/arabic_numerals.dart';
@@ -46,6 +48,14 @@ class _QuranScreenState extends ConsumerState<QuranScreen> {
   /// network call, and one per letter is a request storm.
   String _submitted = '';
   Timer? _debounce;
+
+  @override
+  void initState() {
+    super.initState();
+    // Favourites are flags on the shared surah list; put the saved ones
+    // back before the first build so the chip is not empty after a restart.
+    FavoriteSurahs.restore(ref.read(sharedPreferencesProvider));
+  }
 
   @override
   void dispose() {
@@ -90,6 +100,10 @@ class _QuranScreenState extends ConsumerState<QuranScreen> {
   static String _ar(int n) =>
       n.toString().split('').map((d) => _arabicDigits[int.parse(d)]).join();
 
+  /// Arabic-Indic digits in the Arabic UI only. The English list used to
+  /// number the surahs and count their ayat in Arabic digits.
+  static String _digits(bool arabic, int n) => arabic ? _ar(n) : '$n';
+
   List<Surah> get _visible {
     var list = _chipIndex == 2
         ? kAllSurahs.where((s) => s.favorite).toList()
@@ -130,6 +144,7 @@ class _QuranScreenState extends ConsumerState<QuranScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final arabic = context.locale.languageCode == 'ar';
     final continueReadingSurah = ref.watch(continueReadingSurahProvider);
     final readingPosition = ref.watch(readingPositionProvider);
     final reciter = ref.watch(selectedReciterProvider);
@@ -374,15 +389,21 @@ class _QuranScreenState extends ConsumerState<QuranScreen> {
                   padding: const EdgeInsets.only(bottom: 10),
                   child: _SurahRow(
                     surah: s,
-                    numberLabel: _ar(s.number),
+                    numberLabel: _digits(arabic, s.number),
                     ayahLabel:
-                        '${s.meccan ? "مكية" : "مدنية"} · ${_ar(s.ayahCount)} آية',
+                        '${(s.meccan ? 'quran_screen.meccan' : 'quran_screen.medinan').tr()} · ${'quran_screen.ayah_count'.tr(namedArgs: {'count': _digits(arabic, s.ayahCount)})}',
                     isPlaying: isPlaying && nowPlayingSurah == s.number,
                     reciter: reciter,
                     onTap: () => _openReader(s),
                     onPlay: () => _play(s, reciter),
-                    onToggleFavorite: () =>
-                        setState(() => s.favorite = !s.favorite),
+                    onToggleFavorite: () {
+                      setState(() => s.favorite = !s.favorite);
+                      unawaited(
+                        FavoriteSurahs.persist(
+                          ref.read(sharedPreferencesProvider),
+                        ),
+                      );
+                    },
                   ),
                 );
               },
@@ -546,7 +567,7 @@ class _JuzRow extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    '${'quran_screen.juz'.tr()} ${_QuranScreenState._ar(juz.number)}',
+                    '${'quran_screen.juz'.tr()} ${_QuranScreenState._digits(context.locale.languageCode == 'ar', juz.number)}',
                     style: TextStyle(
                       fontSize: 13.5,
                       fontWeight: FontWeight.w700,
@@ -556,7 +577,7 @@ class _JuzRow extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    '${surahDisplayName(startSurah, context.locale.languageCode == 'ar')} · ${_QuranScreenState._ar(juz.ayahNumber)}',
+                    '${surahDisplayName(startSurah, context.locale.languageCode == 'ar')} · ${_QuranScreenState._digits(context.locale.languageCode == 'ar', juz.ayahNumber)}',
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: TextStyle(

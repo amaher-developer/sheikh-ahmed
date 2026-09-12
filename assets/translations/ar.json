@@ -238,6 +238,7 @@
     "mushaf_load_error": "تعذّر تحميل صفحة المصحف. تحقّق من الاتصال وحاول مرة أخرى.",
     "meccan": "مكية",
     "medinan": "مدنية",
+    "ayah_count": "{count} آية",
     "juz_n": "الجزء {n}",
     "search_surahs": "السور",
     "search_ayahs": "الآيات",

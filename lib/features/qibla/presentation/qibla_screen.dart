@@ -259,6 +259,11 @@ class _CompassCardState extends State<_CompassCard> {
   static String _ar(int n) =>
       n.toString().split('').map((d) => _arabicDigits[int.parse(d)]).join();
 
+  /// Arabic-Indic digits in the Arabic UI only; the English UI used to show
+  /// the bearing in Arabic digits too.
+  static String _digits(BuildContext context, int n) =>
+      context.locale.languageCode == 'ar' ? _ar(n) : '$n';
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -303,7 +308,7 @@ class _CompassCardState extends State<_CompassCard> {
                   ),
                   const SizedBox(width: 6),
                   Text(
-                    '${'qibla_screen.fixed_bearing'.tr()} ${_ar(_staticBearing!.round())}°',
+                    '${'qibla_screen.fixed_bearing'.tr()} ${_digits(context, _staticBearing!.round())}°',
                     style: TextStyle(
                       fontSize: 11.5,
                       fontWeight: FontWeight.w700,
