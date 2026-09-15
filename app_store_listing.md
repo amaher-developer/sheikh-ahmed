@@ -177,3 +177,93 @@ Thank you for reviewing Sheikh Ahmed.
 
 Contact: sheikhahmed.app@gmail.com
 ```
+
+---
+
+## App Review reply — round 1, Guideline 2.1 "Information Needed" (DRAFT, 2026-09-12)
+
+Paste into the App Review message thread on the version page **and** into App Review Information → Notes (4000-character limit; this text fits). The screen recording (iPhone 17, iOS 26.6.2) was small enough to attach directly to the reply, so item 1 says "attached". Sent by the owner on 2026-09-12 together with the corrected screenshots. The content sources in item 6 were confirmed by the owner on 2026-09-12 (all public, nothing licensed).
+
+```
+Thank you for reviewing Sheikh Ahmed. The requested information:
+
+1. Screen recording: attached to our reply in the App Review message thread. Captured on an iPhone 17 running iOS 26.6.2, from launching the app through the typical flow (notification prompt; Home with today's prayer times; Quran: open a surah, tap an ayah, play a recitation; Radio; Azkar; Tracker; More with the privacy policy and contact links). The app has no registration, login or account deletion, and no user-generated content shared with others: the memorization feature records the user's own recitation on the device for playback only.
+
+2. Purpose and audience: a daily worship companion for Muslims, Arabic-first with a full English interface. It combines prayer times and the adhan, the Quran in the layout of the printed Mus'haf with 21 reciters and tafsir, live Quran radio, azkar and duas, a tasbeeh, a worship tracker, a Qibla compass and a zakat calculator in one free app. It replaces several ad-supported or account-based apps: no accounts, no ads, no analytics, no purchases, and content works offline once opened.
+
+3. Setup and access: no login; everything is available immediately. Language: the app opens in Arabic; More (المزيد) > App language (لغة التطبيق) > English. Prayer times are computed on the device, for Cairo by default; More > Location > "Use my location" asks for when-in-use location, or pick a preset city. Notification permission is requested on first launch for the adhan and optional reminders (both can be switched off in More). Quran tab: tap a surah to open the Mus'haf, tap an ayah for play / bookmark / tafsir / tajweed; the play button on a surah plays it in the background with lock-screen controls. Memorization mode (microphone): open a surah > Memorization in the top bar > record and play back; recordings stay on the device. Radio tab: 7 live stations. No sample files or credentials are needed.
+
+4. External services (public content only; no accounts, no user data sent): api.alquran.cloud (Quran text, Saheeh International translation, Tafsir Al-Muyassar); api.quran.com and quran.com (verse search, tajweed and word data, Mus'haf fonts); audio.qurancdn.com (word-by-word audio); mp3quran.net and everyayah.com (recitations); qurango.net and radiojar.com (live radio streams); api.aladhan.com (Hijri date) and cdn.aladhan.com (adhan audio). Prayer times and the Qibla direction are computed on the device. No authentication, payment, analytics, advertising or AI services; App Privacy is "Data Not Collected".
+
+5. Regional differences: none. The app works identically in all regions; only the prayer times and the Qibla direction depend on the user's chosen location.
+
+6. Regulated industry / protected material: not applicable. The content is religious text and audio: the Quran text is in the public domain; the translation, tafsir and recitations are fetched from the free public services listed in item 4; the radio stations are public broadcasts; the fonts are under the SIL Open Font License; the bundled Egyptian adhan is a 1930s recording of Sheikh Mohamed Rifaat. No third-party material requiring a license is bundled with the app.
+
+Contact: sheikhahmed.app@gmail.com
+```
+
+---
+
+## App Review reply — round 2, Guideline 5.2.3 "Legal" (2026-09-15)
+
+Owner's decision: no code changes; answer with the sources' published terms attached and offer to remove anything App Review still considers undocumented. The evidence per source, and what has no evidence (Quran Radio Cairo, everyayah.com, the aladhan.com adhan voices), is in `project_tracking.md` section 3E.
+
+**Attachments** (App Review Information → Attachments; printed from Chrome with headers and footers on, so each page carries its URL and date):
+
+| # | File name | Page |
+|---|---|---|
+| 1 | `01-mp3quran-contact-rights-statement.pdf` | https://mp3quran.net/eng/contact-us |
+| 2 | `02-mp3quran-privacy-rights-section.pdf` | https://mp3quran.net/eng/privacy |
+| 3 | `03-mp3quran-radio-directory.pdf` (+ `03b-radio-directory-entries.png`, a screenshot of the qurango / radiojar lines) | https://www.mp3quran.net/api/v3/radios?language=ar |
+| 4 | `04-alquran-cloud-terms.pdf` | https://alquran.cloud/terms-and-conditions |
+| 5 | `05-quran-foundation-developer-terms.pdf` | https://api-docs.quran.foundation/legal/developer-terms/ |
+
+Two different places on App Store Connect, both used: (1) the **version page** (Distribution → iOS app → version 1.16.2) has an **App Review Information** section near the bottom with Notes and one Attachment field — this is where Apple's message asks for the documents; (2) the **Reply to App Review** dialog under the rejection message is the conversation thread — a 4000-character field with its own Attach File. Both take a single file, so the six files above are combined into **one PDF in that order** (Finder: select them → right-click → Quick Actions → Create PDF), named `sheikh-ahmed-content-rights-evidence.pdf`, uploaded in (1) and attached again to the reply in (2). "Attachment 1–5" in the texts means the sections of that PDF.
+
+**Reply** — 3,826 characters (the field is capped at 4,000). Paste into Reply to App Review, attach the combined PDF, send, then resubmit from the App Review page (required because the build changed to 1.16.2 (37)):
+
+```
+Thank you for the detailed review and for the opportunity to clarify.
+
+Sheikh Ahmed is a free Islamic worship companion: no ads, purchases or accounts. Its audio is the Holy Quran and the call to prayer: recitations by well-known reciters and live Quran radio. The app does not host, mirror, index or monetise any third-party catalogue; every recitation and stream is played directly from the organisation that publishes it. The published terms of each source are linked below and attached as one PDF under App Review Information and to this reply; Attachments 1-5 below are its sections, in that order.
+
+1. Quran recitations (21 reciters, streaming and offline download) - MP3Quran.net, the Quran Audio Library. Its Contact page (Attachment 1, https://mp3quran.net/eng/contact-us) states: "All rights are available to everyone, and we allow copying any material on the site or using any URL on the website. You can share the following URL for Apple, Google or any social website to prove the copyrights is for all: https://mp3quran.net/eng/privacy". The Rights section of that page (Attachment 2, in Arabic) says: "All rights are available to everyone, and any visitor or developer is entitled to use any material or link from the site."
+
+2. Live Quran radio - six of the seven stations are entries of MP3Quran.net's public radio directory (https://www.mp3quran.net/api/v3/radios?language=ar, Attachment 3): the general recitation mix, Sheikh Saud Al-Shuraim, Sheikh Ali Al-Huthaifi, Sheikh Mahmoud Khalil Al-Hussary and Sheikh Mohammed Siddiq Al-Minshawi (entries 108, 18, 46, 74 and 69, served from qurango.net, the host listed in that directory), and Saudi Quran Radio (entry 109082). They are covered by the same MP3Quran policy. The seventh, Quran Radio Cairo, is the free-to-air Quran station of Egypt's national public broadcaster; the app plays its publicly available live stream as-is, without recording, caching or redistributing it. We hold no written licence from that broadcaster; if App Review considers this station insufficiently documented, we will remove it.
+
+3. Quran text, the Saheeh International translation and Tafsir Al-Muyassar - AlQuran Cloud by Islamic Network (Attachment 4, https://alquran.cloud/terms-and-conditions): a free, key-less API whose terms allow the text to be reproduced, embedded, stored and displayed, ask that translators be attributed by name, and state that recitations may be streamed, embedded and downloaded.
+
+4. Verse search, tajweed colouring, word-by-word audio and the Mus'haf page layout and fonts - Quran Foundation (Quran.com), under its Developer Terms of Service (Attachment 5, https://api-docs.quran.foundation/legal/developer-terms/), which grant developers a licence to access and use the APIs to develop and operate applications that provide Quranic experiences to end users.
+
+5. "Play from this verse" - per-verse audio files from everyayah.com, a long-standing free archive of the same reciters' recitations split by verse, used by many Quran applications; it publishes no terms restricting playback. If a written permission is required for this archive, we will move this feature to Islamic Network's audio CDN (terms in Attachment 4).
+
+6. Adhan - the default (Egyptian) adhan is a historic 1930s recording of Sheikh Mohamed Rifaat bundled in the app. Three alternative voices (Makkah, Madinah, Turkish) are played from AlAdhan.com, Islamic Network's prayer-times service, which the app also uses for the Hijri date.
+
+Prayer times and the Qibla direction are computed on the device. Nothing is uploaded, shared or sold, and there is no user-generated content.
+
+If any specific stream or item needs further documentation, please tell us which one and we will provide it or remove that item promptly. Thank you for your time.
+
+Contact: sheikhahmed.app@gmail.com
+```
+
+**App Review Information → Notes** (replaces the earlier notes; under the 4000-character limit):
+
+```
+Thank you for reviewing Sheikh Ahmed.
+
+- No account or login is needed; every feature is available immediately.
+- Language: the app opens in Arabic. To switch to English: last tab "المزيد" (More) > "لغة التطبيق" (App language) > English.
+- Location is optional and used only on the device (prayer times, Qibla); a preset city (Cairo by default) can be chosen in More > Location.
+- Notifications: adhan at prayer times plus optional reminders; both can be switched off in More.
+- Background audio: recitations (Quran tab) and live Quran radio (Radio tab) keep playing with lock-screen controls.
+- Microphone: Memorization mode only (Quran tab > surah > Memorization), to record the user's own recitation for playback; recordings stay on the device.
+
+Content rights (Guideline 5.2.3) - see Attachments 1-5:
+- Recitations (21 reciters) and the radio directory: MP3Quran.net, whose published policy states that all rights are available to everyone and that developers may use any material or link from the site (Attachments 1-2: https://mp3quran.net/eng/contact-us and https://mp3quran.net/eng/privacy). Six of the seven radio stations are entries of its public directory (Attachment 3); the seventh, Quran Radio Cairo, is the free-to-air station of Egypt's public broadcaster, played as a public live stream.
+- Quran text, translation and tafsir: AlQuran Cloud / Islamic Network terms (Attachment 4).
+- Verse search, tajweed, word audio, Mus'haf layout and fonts: Quran Foundation Developer Terms (Attachment 5).
+- Per-verse audio: everyayah.com, a free archive with no restricting terms. Adhan voices: AlAdhan.com (Islamic Network); the default adhan is a bundled 1930s recording.
+The app is free, with no ads, purchases or accounts; it does not host or monetise any catalogue and plays every stream directly from its source. Full details are in our reply in the App Review thread.
+
+Contact: sheikhahmed.app@gmail.com
+```

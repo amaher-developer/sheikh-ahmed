@@ -1,6 +1,6 @@
 # Sheikh Ahmed (الشيخ أحمد) — Project Tracking
 
-_Last updated: 2026-09-12_
+_Last updated: 2026-09-15_
 
 ## 1. Overview
 
@@ -10,7 +10,7 @@ _Last updated: 2026-09-12_
 |---|---|
 | Framework | Flutter 3.47.2 / Dart 3.13.2 (Xcode 26.4, CocoaPods 1.16.2) |
 | Main packages | flutter_riverpod, easy_localization, just_audio + audio_service, flutter_local_notifications, adhan_dart, geolocator, flutter_qiblah, record, hive, shared_preferences, url_launcher |
-| Version | `pubspec.yaml`: 1.16.1 (build 36). 1.16.1+35 came from the Android commit `eb8434d` merged into `main` on 2026-09-11; bumped to +36 on 2026-09-12 for the iOS resubmission so it is above both iOS build 31 and Android build 35. The iOS build Apple reviewed was 1.14.0 (31); build 30 was the first upload attempt (ITMS-90683, see 3A). The App Store Connect version page must be renamed from 1.14.0 to 1.16.1 by the owner before selecting build 36 |
+| Version | `pubspec.yaml`: 1.16.2 (build 37), uploaded by the owner on 2026-09-15 for App Review round 2 (same code as build 36). History: 1.14.0+31 reviewed in round 1 (build 30 was the first upload attempt, ITMS-90683, see 3A); 1.16.1+35 from the Android commit `eb8434d` (live on Google Play); 1.16.1+36 reviewed in round 2. The App Store Connect version page's Version field must read 1.16.2 (Apple's round-2 message showed it as 1.0) |
 | Android applicationId | `com.manassa.sheikhahmed` |
 | iOS bundle ID | `com.manassa.sheikhahmed` |
 | Apple Developer team | Ahmed Maher — `23U33PV5JV` (automatic signing) |
@@ -25,7 +25,7 @@ _Last updated: 2026-09-12_
 | Android | ✅ Live on Google Play — https://play.google.com/store/apps/details?id=com.manassa.sheikhahmed |
 | iOS code readiness | ✅ Merged into `main` (PR #2); `flutter analyze` clean on the merged tree (2026-09-12) |
 | App Store Connect setup | ✅ Done by the owner (app record, version 1.14.0 page, build 31 submitted) |
-| iOS review | ❌ First submission (build 31) came back as Guideline 2.1 "Information Needed" — six questions, no policy or crash finding (section 3D). Resubmission in progress: build 36, the reply text and a screen recording |
+| iOS review | ❌ Round 1 (build 31): Guideline 2.1 "Information Needed" — answered on 2026-09-12 with build 36, the reply and a screen recording (section 3D). Round 2 (build 36, reviewed 2026-09-14): **Guideline 5.2.3 "Legal"** — Apple wants documentary evidence of the rights to the audio the app streams from third-party servers (section 3E). Decision on the options pending with the owner |
 | Screenshots | 🟡 The ones on App Store Connect are the owner's captures. The designer's marketing set needs a redo before it can be used (section 3D) |
 | Facebook launch post | ⬜ After iOS approval |
 
@@ -92,13 +92,42 @@ Apple did not reject the app for a policy or a crash; the reviewer asked for mor
 | 3 | Setup and access instructions | **Claude drafts** from the review notes in `app_store_listing.md`: no login; language switch in More; location optional |
 | 4 | External services | **Claude drafts** from section 10: alquran.cloud, quran.com, qurancdn.com, mp3quran.net, everyayah.com, qurango.net, radiojar.com, aladhan.com; no auth, payments, analytics, ads or AI; prayer times computed on the device |
 | 5 | Regional differences | None: same features everywhere; prayer times follow the user's location |
-| 6 | Regulated industry / protected material | Not regulated. Quran text (public domain), Tafsir Al-Muyassar, Saheeh International via alquran.cloud, recitations and radio from free public sources, OFL fonts, a 1930s Sheikh Mohamed Rifaat adhan recording. **Owner confirms the sources before the reply is sent** |
+| 6 | Regulated industry / protected material | Not regulated. Quran text (public domain), Tafsir Al-Muyassar, Saheeh International via alquran.cloud, recitations and radio from free public sources, OFL fonts, a 1930s Sheikh Mohamed Rifaat adhan recording. Sources confirmed by the owner on 2026-09-12 (all public, nothing licensed) |
 
 Also found while preparing the reply:
 
 - **Designer screenshots** (`/Volumes/SamsungT7/screens/iphone 1290 x 2796px`, 5 PNG): App Store Connect refused them ("Images can't contain alpha channels or transparencies"). About 13% of every image is fully transparent — empty bands of ~160 px at the top and 200–270 px at the bottom, black underneath — so stripping the alpha alone would leave black bars. Bigger problems: every image carries a "Get the app / Download now" footer with Google Play and Apple logos (Guideline 2.3.10); the phone screens are AI-generated rather than real captures (typos «المشاء», «انراديو», «مائنة النَّعايش», "REILECTING"; a radio list that does not exist; the Mus'haf page has wrong ayah markers); callouts name features the app lacks. Brief for the designer given to the owner: fill the 1290 × 2796 canvas, export JPG or PNG without alpha, drop the store footer, real app screenshots inside the frame, real feature captions; same for iPad 2064 × 2752. 1290 × 2796 is accepted in the 6.9" slot.
 - **Privacy policy URL** (claude.ai artifact): `curl` returns 200 with an empty app shell, so whether it opens without a claude.ai login is unverified. The owner tests it in a private window; if it needs a login, host it publicly (GitHub Pages from `docs/` is the cheapest) before resubmitting and update `AppLinks.privacyPolicy`.
 - **Listing text**: `app.txt` in the screens folder is the old Google Play copy (6 reciters, home-screen widget). Whatever is on App Store Connect must match `app_store_listing.md` (21 reciters, no widget).
+
+### E. App Review round 2 — Guideline 5.2.3 "Legal" (reviewed 2026-09-14, submission 7c4e3ca3-fc08-4444-84cb-4c216eaa17f7)
+
+Reviewed on an iPad Air 11-inch (M3); Apple's message says "Version reviewed: 1.0 (36)" although the binary built from `pubspec.yaml` is 1.16.1 (36) — see section 8. The finding: "the app provides potentially unauthorized access to third-party audio or video streaming, catalogs, and discovery services", and the fix Apple asks for is to "attach documentary evidence in the App Review Information section in App Store Connect evidencing that you have all necessary rights or permissions".
+
+**What it is about.** Not the video, not a crash and not a code bug. It is the audio the app plays from servers the project does not own: the 21-reciter catalogue (streamed and downloadable), the per-ayah audio, the 7 radio streams and the three adhan voices streamed in-app on iOS. Our round-1 reply (items 4 and 6) listed those hosts and called them "free public sources" / "public broadcasts", and Content Rights on App Store Connect says the app uses third-party content — that is what put the question in front of the reviewer. Guideline 5.2.2: "ensure that you are specifically permitted to do so under the service's terms of use. Authorization must be provided upon request." Guideline 5.2.3: "Streaming of audio/video content may also violate Terms of Use, so be sure to check ... Authorization must be provided upon request."
+
+**What each source's own pages say** (checked 2026-09-15):
+
+| Source | Used for | Written terms found | Evidence? |
+|---|---|---|---|
+| mp3quran.net | 21 reciters — whole surahs, "download all"; its radios listing | Contact page https://mp3quran.net/eng/contact-us: "All rights are available to everyone, and we allow copying any material on the site or using any URL on the website. You can share the following URL for Apple, Google or any social website to prove the copyrights is for all: https://mp3quran.net/eng/privacy". That privacy page, paragraph «الحقوق»: all rights are available to everyone; any visitor or developer may use any material or link from the site; the policy also covers its sister sites (mp3quran.org, "quranqo.net") | ✅ Strongest document we have |
+| qurango.net — 5 stations (mix, Shuraim, Huthaifi, Hussary, Minshawi) | Radio | No website of its own (root returns 404). All five are entries of mp3quran's public `https://mp3quran.net/api/v3/radios?language=ar` listing (ids 108, 18, 46, 74, 69, hosted there as backup.qurango.net); qurango.net uses the same Cloudflare name servers as mp3quran.net | ✅ Covered by the mp3quran statement plus the listing |
+| radiojar `0tpy1h0kxtzuv` — Saudi Quran Radio | Radio | Entry 109082 «إذاعة القرآن الكريم - السعودية» in the same mp3quran radios listing; nothing from the broadcaster (Saudi Broadcasting Authority) | 🟡 Listing only |
+| radiojar `8s5u5tpdtwzuv` — Quran Radio Cairo | Radio | Found through radio-browser.info; in no catalogue with terms; the rights holder is Egypt's National Media Authority (ERTU) | ❌ Nothing |
+| everyayah.com | "Play from this ayah" — per-ayah files for all 21 reciters | No licence or terms page anywhere on the site; its "Contact us" goes to Quran.com's help centre (quran.zendesk.com); third parties describe the archive as CC BY-NC | ❌ Nothing to attach |
+| alquran.cloud / cdn.islamic.network (Islamic Network) | Quran text, Saheeh International, Tafsir Al-Muyassar | https://alquran.cloud/terms-and-conditions: the text may be reproduced, embedded, stored and displayed freely; "Recitations are licensed to us by the reciters or their estates for free, non-commercial redistribution ... You may stream, embed and download them ... You may bundle them into a commercial product"; attribute translators by name | ✅ Yes |
+| api.quran.com, quran.com fonts, audio.qurancdn.com (Quran Foundation) | Search, tajweed, word-by-word audio, Mus'haf page layout and fonts | Developer Terms of Service https://api-docs.quran.foundation/legal/developer-terms/ (effective 2026-09-14): licence "to access and use the APIs solely to develop and operate Applications that provide beneficial Quranic experiences"; free and paid apps allowed; attribution "Quran data provided by Quran Foundation" required wherever the content is shown — the app shows none today | ✅ Yes (attribution to add) |
+| cdn.aladhan.com (Islamic Network) | Makkah, Madinah and Turkish adhan voices streamed in-app on iOS (Android bundles the same mp3s: `android/app/src/main/res/raw/`, 3.4 + 3.8 + 5.4 MB) | https://aladhan.com/credits-and-terms: "All audio files used on this website and third party libraries own and retain their respective copyrights" — no permission granted | ❌ Not a permission |
+
+**Precedents** (Apple developer forums, 2021–2025): reviewers accepted an ownership letter or a written statement from the rights holder; for radio aggregators the only reported way through was "written approval from each station", or the reviewer's own suggestion to "limit your app to streaming open-source stations only"; one thread advises putting the rights statement inside the app so the evidence is obvious to the reviewer.
+
+**Options** (owner decides):
+
+1. Documents only, no code change — attach the mp3quran, alquran.cloud and Quran Foundation pages, explain everyayah, the Cairo station and the adhan audio in the reply. Fastest, but three sources stay undocumented, so a third rejection is likely.
+2. **Recommended:** documents + remove what cannot be documented: (a) drop the Cairo station from the iOS build, and from the App Store description and keywords, until a written permission from the National Media Authority exists; (b) move "play from this ayah" off everyayah.com to sources with published terms (Islamic Network's CDN and/or Quran Foundation per-ayah audio — coverage per reciter to be verified before any code change; reciters not covered keep whole-surah playback only); (c) bundle the three streamed adhan voices in the iOS app as Android already does (about 12.6 MB more) so nothing streams from aladhan.com; (d) add a "Content sources" screen under More listing every source with its terms link (also satisfies the Quran Foundation attribution rule); (e) build 37, attach the PDFs, reply in the Resolution Center, resubmit.
+3. Keep the Cairo station and wait for a written permission from the National Media Authority before resubmitting — open-ended delay.
+
+**Decision (2026-09-15): option 1.** The owner keeps the app as it is (no code changes), attaches the five PDFs, sends the reply and the new notes from `app_store_listing.md` ("round 2" section) and resubmits. The reply states plainly that there is no written licence for the Cairo station and offers to remove it, and offers to move per-verse audio off everyayah.com if a permission is required — so if Apple names one of those items, the next step is the corresponding code change from option 2. Risk as explained to the owner: ✅ mp3quran reciters, the five qurango stations, alquran.cloud, Quran Foundation; 🟡 Saudi Quran Radio (directory entry only), aladhan.com adhan voices; ❌ Quran Radio Cairo (rights holder: National Media Authority), everyayah.com (no terms at all).
 
 ## 4. Decisions log
 
@@ -116,6 +145,7 @@ Also found while preparing the reply:
 | 2026-09-11 | Claude reviews and fixes code only; the owner runs the app and prepares screenshots | Owner's instruction |
 | 2026-09-12 | Work continues on `main`; `ios/app-store-release` was merged through PR #2 and is no longer used | The owner merged it and asked to continue from `main` |
 | 2026-09-12 | `test/` deleted again (two source-reading tests re-added by the parallel Android commit `eb8434d`) | Project rule: no tests. They also broke `flutter analyze` because `flutter_test` is no longer a dev dependency |
+| 2026-09-15 | Round-2 rejection (5.2.3) answered with documents only, no code changes (section 3E, option 1) | Owner's choice: ship as is, attach the sources' published terms, and handle any item Apple names afterwards |
 
 ## 5. Known iOS limitations (not blockers)
 
@@ -147,17 +177,19 @@ Also found while preparing the reply:
 - ~~Version for the resubmission~~ — decided 2026-09-12: stay on 1.16.1, build 36 (above iOS 31 and Android 35). The owner renames the App Store Connect version page from 1.14.0 to 1.16.1 and selects build 36.
 - **Privacy policy URL** — does it open without a claude.ai login? Unverified (section 3D).
 - **Screenshots** — waiting for the designer's corrected set (section 3D).
+- **Version page string** — Apple's round-2 message showed "1.0 (36)". The build uploaded on 2026-09-15 is 1.16.2 (37); the owner sets the version page's Version field to 1.16.2 when selecting it.
+- **Round-2 options** (section 3E) — which option, and does the owner want to seek permission from the National Media Authority for the Cairo station?
 - ~~Support URL~~ and ~~app name availability~~ — resolved by the owner during the App Store Connect setup (values not recorded here).
 
 ## 9. Handoff — continuing in a new chat
 
-**Where things stand (2026-09-12, evening):** the first App Store submission (1.14.0, build 31) came back as **Guideline 2.1 "Information Needed"** — six questions, no policy or crash finding; details and the answer plan are in section 3D. `main` is up to date: `ios/app-store-release` merged through PR #2, plus the parallel Android-only commit `eb8434d` (adhan alert screen and dhikr card over other apps, alarm restore after reboot, "Appear on top" banner on Home). Verified on the merged tree: no conflict markers, every iOS-side change intact, Dart ↔ Kotlin channel method names match, the new Home banner cannot show on iOS. Code pass for the resubmission done, `flutter analyze` clean: `test/` removed again, version 1.16.1+36, Quran favourites now persist, the surah list, juz cards and Qibla bearing no longer show Arabic words or digits in the English UI. **Uncommitted at the time of writing** — the owner is taking the build from here and commits when ready. Working rules from the owner: analyze and propose, then wait; the owner performs App Store Connect, designer and device steps themselves; no running the app, no simulators, no screenshots, no builds and no commits unless asked.
+**Where things stand (2026-09-15):** round 1 was answered on 2026-09-12 (build 36 uploaded by the owner, the reply from `app_store_listing.md` and a screen recording sent). On 2026-09-14 Apple came back with **Guideline 5.2.3 "Legal"**: documentary evidence is required for the rights to the audio the app streams and downloads from third-party servers. The full analysis — what each source's terms say, what can be attached, what has no evidence (Quran Radio Cairo, everyayah.com per-ayah audio, the aladhan.com adhan voices) and three options with a recommendation — is in section 3E. **No code was changed for round 2 yet; the owner is choosing the option.** The round-1 reply block in `app_store_listing.md` and this file's updates are still uncommitted (committed only when the owner says so; `git status` also shows `ios/Podfile.lock` staged as deleted and present untracked — the owner's doing, leave it). Working rules from the owner: analyze and propose, then wait; the owner performs App Store Connect, designer and device steps themselves; no running the app, no simulators, no screenshots, no builds and no commits unless asked.
 
 **Next steps, in order**
 
-1. **Owner:** `flutter build ipa --release`, upload from Xcode Organizer (Distribute App → App Store Connect), wait for processing, install build 36 through TestFlight, record the screen recording (3D item 1). Rename the App Store Connect version page from 1.14.0 to 1.16.1 and select build 36.
-2. **Owner:** answer the four open facts — which text is on App Store Connect, does the privacy link open in a private window, the Support URL, and the content sources (3D item 6).
-3. **Claude:** draft the English reply covering 3D items 2–6 for the owner to review, paste into the App Review thread and into App Review Information → Notes, then Submit for Review again (required because the build changed).
+1. **Owner (in progress, 2026-09-15):** option 1 chosen; the five PDFs are printed; build 1.16.2 (37) uploaded (`pubspec.yaml` updated by the owner). Version page renamed to 1.16.2 and the new notes pasted (2026-09-15). Remaining, in this order: make sure build 37 is the selected build; combine the six evidence files into one PDF (the Attachment field takes a single file) and upload it under App Review Information → Save; Reply to App Review with the 3,826-character reply from `app_store_listing.md` ("round 2"), attaching the same PDF; resubmit from the App Review page.
+2. **If Apple names a specific item:** the matching code change from section 3E option 2 (remove the Cairo station; move per-verse audio to Islamic Network / Quran Foundation after checking reciter coverage; bundle the adhan voices), a new build, and a short follow-up reply.
+3. **After approval (backlog):** add the attribution line "Quran data provided by Quran Foundation" (its terms require it) and a "Content sources" screen under More.
 4. **Screenshots:** designer redo per the brief in 3D; the owner uploads them any time before approval. Not blocking.
 5. **After approval:** add the App Store link to this file, then write the Facebook launch post in Arabic about the project and its features (use section 10).
 
@@ -218,6 +250,11 @@ Source files: `android/app/src/main/res/raw/<rawResource>.mp3`.
 4. Add the file to the Runner target's Copy Bundle Resources (the `Sounds` group in `project.pbxproj`). The file name must match `AdhanVoice.iosNotificationSound` (`rawResource` + `.caf`).
 
 ## 13. Change log
+
+### 2026-09-15 — App Review round 2 (Guideline 5.2.3)
+
+- No code changes. Researched the terms of every audio and data source the app uses and recorded the findings, the evidence that can be attached and the options in section 3E; open questions in section 8; handoff in section 9 rewritten.
+- Owner chose option 1 (documents only). The English reply, the new App Review notes and the attachment list are in `app_store_listing.md` → "App Review reply — round 2". The reply was trimmed to 3,760 characters because the Reply to App Review field is capped at 4,000. The owner uploaded 1.16.2+37 (pubspec updated by the owner).
 
 ### 2026-09-12 — after the App Store rejection
 
